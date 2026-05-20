@@ -3,477 +3,601 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Travel Recommender</title>
+<title>Everywhen — Find Your Next Destination</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-  :root {
-    --bg: #F7F4EE;
-    --surface: #FFFFFF;
-    --surface2: #F0EDE6;
-    --border: rgba(0,0,0,0.1);
-    --text: #1A1814;
-    --text2: #6B6760;
-    --text3: #9E9B95;
-    --accent: #2D5A3D;
-    --accent-light: #E8F0EA;
-    --accent2: #C4743A;
-    --accent2-light: #FAF0E8;
-    --danger: #C4453A;
-    --tag-bg: #EDE9E0;
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
+:root{
+  --bg:#0D0F14;
+  --surface:#161920;
+  --surface2:#1E222C;
+  --surface3:#252A36;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#F0EDE6;
+  --text2:#9A97A0;
+  --text3:#5C5A63;
+  --gold:#C9A96E;
+  --gold-light:#E8D4A8;
+  --gold-dim:rgba(201,169,110,0.15);
+  --gold-dim2:rgba(201,169,110,0.08);
+  --teal:#4ECDC4;
+  --teal-dim:rgba(78,205,196,0.12);
+  --red:#E05C5C;
+  --red-dim:rgba(224,92,92,0.12);
+  --radius:14px;
+  --radius-sm:8px;
+  --radius-xs:5px;
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-  }
+html{scroll-behavior:smooth}
 
-  /* Header */
-  .header {
-    background: var(--accent);
-    color: white;
-    padding: 2.5rem 2rem 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 220px; height: 220px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-  }
-  .header::after {
-    content: '';
-    position: absolute;
-    bottom: -40px; left: 40px;
-    width: 140px; height: 140px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-  }
-  .header-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
-  .header h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.2rem;
-    font-weight: 400;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-bottom: 0.4rem;
-  }
-  .header p {
-    font-size: 0.9rem;
-    opacity: 0.75;
-    font-weight: 300;
-  }
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
 
-  /* Main layout */
-  .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+/* ── HEADER ── */
+.header{
+  position:relative;
+  padding:3rem 2.5rem 2.5rem;
+  border-bottom:0.5px solid var(--border);
+  overflow:hidden;
+}
 
-  /* Two-col layout */
-  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; align-items: start; }
+.header-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(201,169,110,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,169,110,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 80% 100% at 50% 0%, black 40%, transparent 100%);
+}
 
-  @media (max-width: 720px) {
-    .layout { grid-template-columns: 1fr; }
-  }
+.header-glow{
+  position:absolute;
+  top:-120px;right:-80px;
+  width:500px;height:500px;
+  background:radial-gradient(ellipse, rgba(201,169,110,0.08) 0%, transparent 65%);
+  pointer-events:none;
+}
 
-  /* Panel */
-  .panel {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    overflow: hidden;
-  }
-  .panel-header {
-    padding: 1rem 1.25rem 0.75rem;
-    border-bottom: 0.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .panel-header h2 {
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text2);
-  }
-  .panel-body { padding: 1rem 1.25rem; }
+.header-inner{
+  position:relative;z-index:1;
+  max-width:940px;margin:0 auto;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;
+  flex-wrap:wrap;
+}
 
-  /* Region checkboxes */
-  .regions { display: flex; flex-direction: column; gap: 6px; }
-  .region-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: background 0.15s;
-    user-select: none;
-  }
-  .region-item:hover { background: var(--surface2); }
-  .region-item input[type="checkbox"] { display: none; }
-  .region-dot {
-    width: 18px; height: 18px;
-    border-radius: 5px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-  .region-dot svg { display: none; }
-  input[type="checkbox"]:checked + .region-dot {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-  input[type="checkbox"]:checked + .region-dot svg { display: block; }
-  .region-label { font-size: 0.875rem; font-weight: 400; }
-  .region-count { margin-left: auto; font-size: 0.75rem; color: var(--text3); }
+.header-brand{
+  display:flex;align-items:center;gap:14px;margin-bottom:0.5rem;
+}
 
-  /* Sliders */
-  .sliders { display: flex; flex-direction: column; gap: 0; }
-  .slider-section { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--border); }
-  .slider-section:last-child { border-bottom: none; }
-  .slider-section-title {
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 0.75rem;
-    font-weight: 500;
-  }
+.brand-mark{
+  width:38px;height:38px;
+  border:1.5px solid var(--gold);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;color:var(--gold);
+  letter-spacing:0.05em;
+}
 
-  .slider-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 0.65rem;
-  }
-  .slider-row:last-child { margin-bottom: 0; }
-  .slider-label {
-    font-size: 0.82rem;
-    color: var(--text2);
-    width: 110px;
-    flex-shrink: 0;
-  }
-  .slider-wrap { flex: 1; position: relative; }
-  input[type="range"] {
-    width: 100%;
-    height: 4px;
-    -webkit-appearance: none;
-    appearance: none;
-    background: var(--surface2);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: 2px solid white;
-    box-shadow: 0 0 0 1.5px var(--accent);
-  }
-  input[type="range"].inverted::-webkit-slider-thumb { background: var(--accent2); box-shadow: 0 0 0 1.5px var(--accent2); }
-  .slider-val {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text);
-    min-width: 26px;
-    text-align: right;
-  }
+.header h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3rem;font-weight:300;
+  letter-spacing:-0.03em;line-height:1;
+  color:var(--text);
+}
+.header h1 em{font-style:italic;color:var(--gold);}
 
-  /* Find button */
-  .find-btn {
-    width: 100%;
-    padding: 0.9rem;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    letter-spacing: 0.02em;
-    transition: opacity 0.15s, transform 0.1s;
-    margin-top: 1rem;
-  }
-  .find-btn:hover { opacity: 0.9; }
-  .find-btn:active { transform: scale(0.99); }
-  .find-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.header-sub{
+  font-size:0.82rem;color:var(--text2);
+  font-weight:300;letter-spacing:0.04em;
+  margin-top:0.6rem;
+}
 
-  /* Results */
-  .results-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  .results-header h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.3rem;
-    font-weight: 400;
-  }
-  .results-count { font-size: 0.8rem; color: var(--text3); }
+.header-stat{
+  text-align:right;flex-shrink:0;
+}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.2rem;font-weight:300;color:var(--gold);
+}
+.stat-label{font-size:0.72rem;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:2px;}
 
-  .placeholder {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 3rem 2rem;
-    text-align: center;
-  }
-  .placeholder-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.3; }
-  .placeholder p { font-size: 0.9rem; color: var(--text3); line-height: 1.6; }
+/* ── MAIN ── */
+.main{
+  max-width:940px;margin:0 auto;
+  padding:2rem 1.5rem 5rem;
+}
 
-  /* City cards */
-  .cards { display: flex; flex-direction: column; gap: 10px; }
+.layout{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:1.5rem;
+  align-items:start;
+}
+@media(max-width:700px){.layout{grid-template-columns:1fr;}}
 
-  .city-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
-    display: grid;
-    grid-template-columns: 40px 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    animation: fadeUp 0.3s ease both;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+/* ── SIDEBAR ── */
+.sidebar{display:flex;flex-direction:column;gap:1rem;}
 
-  .city-rank {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    color: var(--text3);
-    text-align: center;
-    line-height: 1;
-  }
-  .city-rank.top { color: var(--accent); }
+.panel{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
 
-  .city-info {}
-  .city-name {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 2px;
-  }
-  .city-country {
-    font-size: 0.8rem;
-    color: var(--text3);
-    margin-bottom: 8px;
-  }
+.panel-header{
+  padding:0.9rem 1.2rem;
+  border-bottom:0.5px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.panel-header-label{
+  font-size:0.65rem;
+  font-weight:600;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--text3);
+}
+.panel-header-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--gold);
+  opacity:0.6;
+  margin-left:auto;
+}
 
-  .city-desc {
-    font-size: 0.82rem;
-    color: var(--text2);
-    line-height: 1.4;
-    margin-top: 8px;
-    font-weight: 300;
-  }
+/* ── REGIONS ── */
+.regions{padding:0.6rem 0.5rem;}
 
-  .city-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-  .tag {
-    font-size: 0.72rem;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--tag-bg);
-    color: var(--text2);
-    font-weight: 400;
-  }
-  .tag.highlight { background: var(--accent-light); color: var(--accent); }
-  .tag.warn { background: var(--accent2-light); color: var(--accent2); }
+.region-item{
+  display:flex;align-items:center;gap:10px;
+  padding:0.55rem 0.75rem;
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  transition:background 0.15s;
+  user-select:none;
+}
+.region-item:hover{background:var(--surface2);}
+.region-item input{display:none;}
 
-  .score-ring {
-    width: 54px; height: 54px;
-    position: relative;
-    flex-shrink: 0;
-  }
-  .score-ring svg { transform: rotate(-90deg); }
-  .score-text {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: 500;
-    line-height: 1.1;
-  }
-  .score-text small { font-size: 0.55rem; color: var(--text3); font-weight: 400; }
+.region-check{
+  width:17px;height:17px;
+  border-radius:4px;
+  border:1px solid var(--border2);
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;flex-shrink:0;
+}
+.region-check svg{display:none;}
+input:checked + .region-check{
+  background:var(--gold);border-color:var(--gold);
+}
+input:checked + .region-check svg{display:block;}
 
-  /* Loading */
-  .loading {
-    text-align: center;
-    padding: 3rem;
-    color: var(--text3);
-    font-size: 0.9rem;
-  }
-  .spinner {
-    width: 28px; height: 28px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 0 auto 1rem;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+.region-label{font-size:0.83rem;font-weight:400;color:var(--text2);}
+input:checked ~ .region-label{color:var(--text);}
 
-  /* Error */
-  .error-msg {
-    background: #FEF2F2;
-    border: 0.5px solid #FECACA;
-    border-radius: var(--radius-sm);
-    padding: 1rem 1.25rem;
-    font-size: 0.85rem;
-    color: var(--danger);
-  }
+.region-pill{
+  margin-left:auto;
+  font-size:0.65rem;
+  padding:2px 7px;
+  border-radius:20px;
+  background:var(--surface3);
+  color:var(--text3);
+  font-weight:500;
+}
 
-  /* Code block for Python output */
-  .code-hint {
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 0.75rem 1rem;
-    font-family: monospace;
-    font-size: 0.78rem;
-    color: var(--text2);
-    margin-top: 1rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
+/* ── SLIDERS ── */
+.slider-group{padding:1rem 1.2rem;border-bottom:0.5px solid var(--border);}
+.slider-group:last-child{border-bottom:none;}
+
+.group-title{
+  font-size:0.62rem;
+  font-weight:600;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--text3);
+  margin-bottom:0.9rem;
+}
+
+.slider-row{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:0.7rem;
+}
+.slider-row:last-child{margin-bottom:0;}
+
+.slider-icon{
+  width:22px;text-align:center;
+  font-size:0.85rem;flex-shrink:0;
+  opacity:0.7;
+}
+
+.slider-label{
+  font-size:0.78rem;
+  color:var(--text2);
+  width:95px;flex-shrink:0;
+  font-weight:300;
+}
+
+.slider-track{flex:1;position:relative;}
+
+input[type="range"]{
+  width:100%;height:3px;
+  -webkit-appearance:none;appearance:none;
+  background:var(--surface3);
+  border-radius:2px;outline:none;cursor:pointer;
+  display:block;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--gold);
+  cursor:pointer;
+  border:2px solid var(--bg);
+  box-shadow:0 0 0 1px var(--gold);
+  transition:transform 0.1s;
+}
+input[type="range"]:hover::-webkit-slider-thumb{transform:scale(1.2);}
+input[type="range"].red-slider::-webkit-slider-thumb{
+  background:var(--red);
+  box-shadow:0 0 0 1px var(--red);
+}
+
+.slider-val{
+  font-size:0.75rem;font-weight:500;
+  color:var(--gold);
+  min-width:24px;text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.slider-val.red{color:var(--red);}
+
+/* ── FIND BUTTON ── */
+.find-btn{
+  width:100%;
+  padding:0.9rem 1rem;
+  background:var(--gold);
+  color:#0D0F14;
+  border:none;border-radius:var(--radius-sm);
+  font-family:'Outfit',sans-serif;
+  font-size:0.85rem;font-weight:600;
+  cursor:pointer;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  transition:opacity 0.15s,transform 0.1s;
+  margin-top:0.25rem;
+  position:relative;overflow:hidden;
+}
+.find-btn::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.15) 0%,transparent 50%);
+}
+.find-btn:hover{opacity:0.92;}
+.find-btn:active{transform:scale(0.99);}
+.find-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* ── RESULTS AREA ── */
+.results-col{}
+
+.results-header{
+  display:flex;align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:1.25rem;
+}
+
+.results-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem;font-weight:300;
+  letter-spacing:-0.01em;
+  color:var(--text);
+}
+.results-title em{font-style:italic;color:var(--gold);}
+
+.results-meta{
+  font-size:0.72rem;color:var(--text3);
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+
+/* ── PLACEHOLDER ── */
+.placeholder{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:4rem 2rem;
+  text-align:center;
+}
+.placeholder-icon{
+  font-size:3rem;margin-bottom:1.2rem;
+  display:block;opacity:0.25;
+  filter:grayscale(1);
+}
+.placeholder p{font-size:0.85rem;color:var(--text3);line-height:1.7;font-weight:300;}
+.placeholder strong{color:var(--text2);font-weight:500;}
+
+/* ── CITY CARDS ── */
+.cards{display:flex;flex-direction:column;gap:10px;}
+
+.city-card{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.1rem 1.25rem;
+  display:grid;
+  grid-template-columns:36px 1fr auto;
+  gap:1rem;
+  align-items:start;
+  transition:border-color 0.2s,background 0.2s;
+  animation:riseIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  cursor:default;
+}
+.city-card:hover{
+  background:var(--surface2);
+  border-color:var(--border2);
+}
+.city-card.gold-card{
+  border-color:rgba(201,169,110,0.25);
+  background:linear-gradient(135deg, var(--surface) 0%, rgba(201,169,110,0.04) 100%);
+}
+.city-card.gold-card:hover{border-color:rgba(201,169,110,0.4);}
+
+@keyframes riseIn{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Rank */
+.city-rank{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem;font-weight:300;
+  color:var(--text3);
+  line-height:1;padding-top:2px;
+  text-align:center;
+}
+.city-rank.gold{color:var(--gold);}
+
+/* Info */
+.city-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem;font-weight:400;
+  color:var(--text);letter-spacing:-0.01em;
+  line-height:1.2;margin-bottom:1px;
+}
+.city-location{
+  font-size:0.72rem;color:var(--text3);
+  font-weight:400;letter-spacing:0.04em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.tag{
+  font-size:0.67rem;font-weight:500;
+  padding:3px 9px;border-radius:20px;
+  letter-spacing:0.03em;
+}
+.tag-teal{background:var(--teal-dim);color:var(--teal);}
+.tag-gold{background:var(--gold-dim);color:var(--gold);}
+.tag-red{background:var(--red-dim);color:var(--red);}
+.tag-neutral{background:var(--surface3);color:var(--text2);}
+
+.city-desc{
+  font-size:0.78rem;color:var(--text3);
+  line-height:1.55;font-weight:300;
+}
+
+/* Score ring */
+.ring-wrap{
+  width:52px;height:52px;
+  position:relative;flex-shrink:0;
+}
+.ring-wrap svg{
+  transform:rotate(-90deg);display:block;
+}
+.ring-inner{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.ring-num{font-size:0.82rem;font-weight:600;line-height:1;}
+.ring-pct{font-size:0.55rem;color:var(--text3);font-weight:400;}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:4rem 2rem;color:var(--text3);}
+.spinner{
+  width:24px;height:24px;
+  border:1.5px solid var(--surface3);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  margin:0 auto 1rem;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading p{font-size:0.82rem;font-weight:300;letter-spacing:0.04em;}
+
+/* ── ERROR ── */
+.error-box{
+  background:var(--red-dim);
+  border:0.5px solid rgba(224,92,92,0.3);
+  border-radius:var(--radius-sm);
+  padding:1rem 1.25rem;
+  font-size:0.83rem;color:var(--red);font-weight:400;
+}
+
+/* ── CODE HINT ── */
+.code-section{margin-top:1.5rem;}
+.code-label{
+  font-size:0.68rem;color:var(--text3);
+  letter-spacing:0.08em;text-transform:uppercase;
+  margin-bottom:0.5rem;
+}
+.code-block{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:1rem 1.25rem;
+  font-family:'Courier New',monospace;
+  font-size:0.73rem;color:var(--text2);
+  line-height:1.7;white-space:pre-wrap;word-break:break-all;
+}
+
+/* ── DIVIDER ── */
+.divider{
+  height:0.5px;background:var(--border);
+  margin:0.75rem 0;
+}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
+  <div class="header-grid"></div>
+  <div class="header-glow"></div>
   <div class="header-inner">
-    <h1>Where should you go?</h1>
-    <p>Tune your preferences. We'll find your perfect destination.</p>
+    <div>
+      <div class="header-brand">
+        <div class="brand-mark">E</div>
+        <span style="font-size:0.72rem;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;font-weight:500;">Everywhen</span>
+      </div>
+      <h1>Where will you go <em>next?</em></h1>
+      <p class="header-sub">Tune your preferences — we'll surface destinations that match how you travel.</p>
+    </div>
+    <div class="header-stat" id="header-stat" style="opacity:0.4">
+      <div class="stat-num" id="stat-num">—</div>
+      <div class="stat-label">destinations indexed</div>
+    </div>
   </div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
   <div class="layout">
 
-    <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
 
+      <!-- Regions -->
       <div class="panel">
         <div class="panel-header">
-          <h2>Region</h2>
+          <span class="panel-header-label">Region</span>
+          <div class="panel-header-dot"></div>
         </div>
-        <div class="panel-body">
-          <div class="regions" id="regions">
-          </div>
-        </div>
+        <div class="regions" id="regions"></div>
       </div>
 
+      <!-- Sliders -->
       <div class="panel">
         <div class="panel-header">
-          <h2>Preferences</h2>
+          <span class="panel-header-label">Preferences</span>
+          <div class="panel-header-dot"></div>
         </div>
-        <div class="sliders">
 
-          <div class="slider-section">
-            <div class="slider-section-title">Vibe</div>
-            <div class="slider-row">
-              <span class="slider-label">Culture</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="70" step="1" id="s-culture" oninput="updateVal(this,'v-culture')"/></div>
-              <span class="slider-val" id="v-culture">70</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-label">Nature</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="30" step="1" id="s-nature" oninput="updateVal(this,'v-nature')"/></div>
-              <span class="slider-val" id="v-nature">30</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-label">Beaches</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="20" step="1" id="s-beaches" oninput="updateVal(this,'v-beaches')"/></div>
-              <span class="slider-val" id="v-beaches">20</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-label">Urban</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="80" step="1" id="s-urban" oninput="updateVal(this,'v-urban')"/></div>
-              <span class="slider-val" id="v-urban">80</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-label">Seclusion</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="20" step="1" id="s-seclusion" oninput="updateVal(this,'v-seclusion')"/></div>
-              <span class="slider-val" id="v-seclusion">20</span>
-            </div>
+        <div class="slider-group">
+          <div class="group-title">Experience</div>
+          <div class="slider-row">
+            <span class="slider-icon">🏛</span>
+            <span class="slider-label">Culture</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="70" step="1" id="s-culture" oninput="upd(this,'v-culture')"/></div>
+            <span class="slider-val" id="v-culture">70</span>
           </div>
-
-          <div class="slider-section">
-            <div class="slider-section-title">Quality & Popularity</div>
-            <div class="slider-row">
-              <span class="slider-label">Safety</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="70" step="1" id="s-safety_index" oninput="updateVal(this,'v-safety')"/></div>
-              <span class="slider-val" id="v-safety">70</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-label">Popularity</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="80" step="1" id="s-popularity_score" oninput="updateVal(this,'v-pop')"/></div>
-              <span class="slider-val" id="v-pop">80</span>
-            </div>
+          <div class="slider-row">
+            <span class="slider-icon">🌿</span>
+            <span class="slider-label">Nature</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="30" step="1" id="s-nature" oninput="upd(this,'v-nature')"/></div>
+            <span class="slider-val" id="v-nature">30</span>
           </div>
-
-          <div class="slider-section">
-            <div class="slider-section-title">Budget & Climate</div>
-            <div class="slider-row">
-              <span class="slider-label">Cost of living</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="60" step="1" id="s-cost_of_living_index" oninput="updateVal(this,'v-cost')"/></div>
-              <span class="slider-val" id="v-cost">60</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-label">Climate</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="55" step="1" id="s-climate_index" oninput="updateVal(this,'v-climate')"/></div>
-              <span class="slider-val" id="v-climate">55</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-label">Pollution</span>
-              <div class="slider-wrap"><input type="range" min="0" max="100" value="50" step="1" id="s-pollution_index" class="inverted" oninput="updateVal(this,'v-pollution')"/></div>
-              <span class="slider-val" id="v-pollution">50</span>
-            </div>
+          <div class="slider-row">
+            <span class="slider-icon">🏖</span>
+            <span class="slider-label">Beaches</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="20" step="1" id="s-beaches" oninput="upd(this,'v-beaches')"/></div>
+            <span class="slider-val" id="v-beaches">20</span>
           </div>
-
+          <div class="slider-row">
+            <span class="slider-icon">🏙</span>
+            <span class="slider-label">Urban</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="80" step="1" id="s-urban" oninput="upd(this,'v-urban')"/></div>
+            <span class="slider-val" id="v-urban">80</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-icon">🏝</span>
+            <span class="slider-label">Seclusion</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="20" step="1" id="s-seclusion" oninput="upd(this,'v-seclusion')"/></div>
+            <span class="slider-val" id="v-seclusion">20</span>
+          </div>
         </div>
+
+        <div class="slider-group">
+          <div class="group-title">Liveability</div>
+          <div class="slider-row">
+            <span class="slider-icon">🔒</span>
+            <span class="slider-label">Safety</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="70" step="1" id="s-safety_index" oninput="upd(this,'v-safety')"/></div>
+            <span class="slider-val" id="v-safety">70</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-icon">⭐</span>
+            <span class="slider-label">Popularity</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="80" step="1" id="s-popularity_score" oninput="upd(this,'v-pop')"/></div>
+            <span class="slider-val" id="v-pop">80</span>
+          </div>
+        </div>
+
+        <div class="slider-group">
+          <div class="group-title">Budget & Climate</div>
+          <div class="slider-row">
+            <span class="slider-icon">💰</span>
+            <span class="slider-label">Cost of living</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="60" step="1" id="s-cost_of_living_index" oninput="upd(this,'v-cost')"/></div>
+            <span class="slider-val" id="v-cost">60</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-icon">🌡</span>
+            <span class="slider-label">Climate</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="55" step="1" id="s-climate_index" oninput="upd(this,'v-climate')"/></div>
+            <span class="slider-val" id="v-climate">55</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-icon">💨</span>
+            <span class="slider-label">Pollution</span>
+            <div class="slider-track"><input type="range" min="0" max="100" value="50" step="1" id="s-pollution_index" class="red-slider" oninput="upd(this,'v-pollution',true)"/></div>
+            <span class="slider-val red" id="v-pollution">50</span>
+          </div>
+        </div>
+
       </div>
 
       <button class="find-btn" id="find-btn" onclick="runRecommend()">
-        Find destinations
+        Find destinations →
       </button>
 
     </div>
 
-    <div>
+    <!-- RESULTS -->
+    <div class="results-col">
       <div class="results-header">
-        <h2 id="results-title">Your destinations</h2>
-        <span class="results-count" id="results-count"></span>
+        <h2 class="results-title" id="results-title">Your <em>destinations</em></h2>
+        <span class="results-meta" id="results-meta"></span>
       </div>
       <div id="results-area">
         <div class="placeholder">
-          <div class="placeholder-icon">✈</div>
-          <p>Set your preferences and choose at least one region,<br/>then click <strong>Find destinations</strong>.</p>
+          <span class="placeholder-icon">✈</span>
+          <p>Adjust your preferences, choose regions,<br/>then click <strong>Find destinations</strong>.</p>
         </div>
       </div>
-      <div id="code-output" style="display:none;">
-        <p style="font-size:0.78rem; color:var(--text3); margin: 1.5rem 0 0.4rem;">Run this in your Jupyter notebook:</p>
-        <div class="code-hint" id="code-text"></div>
+      <div id="code-section" style="display:none;">
+        <div class="code-section">
+          <div class="code-label">Equivalent Python — run in your notebook</div>
+          <div class="code-block" id="code-text"></div>
+        </div>
       </div>
     </div>
 
@@ -481,365 +605,224 @@
 </div>
 
 <script>
-const REGIONS = [
-  { key: "europe",        label: "Europe",        count: "Active" },
-  { key: "asia",          label: "Asia",          count: "Active" },
-  { key: "north_america", label: "North America", count: "Active" },
-  { key: "south_america", label: "South America", count: "Active" },
-  { key: "africa",        label: "Africa",         count: "Active" },
-  { key: "oceania",       label: "Oceania",        count: "Active" },
-  { key: "middle_east",   label: "Middle East",   count: "Active" },
+const REGIONS=[
+  {key:"europe",       label:"Europe",        flag:"🇪🇺"},
+  {key:"asia",         label:"Asia",           flag:"🌏"},
+  {key:"north_america",label:"North America",  flag:"🌎"},
+  {key:"south_america",label:"South America",  flag:"🌎"},
+  {key:"africa",       label:"Africa",         flag:"🌍"},
+  {key:"oceania",      label:"Oceania",        flag:"🌊"},
+  {key:"middle_east",  label:"Middle East",    flag:"🕌"},
 ];
 
-// Updated 10 features matching python selection exactly
-const FEATURE_COLS = [
-  "culture", "nature", "beaches", "urban", "seclusion", 
-  "safety_index", "cost_of_living_index", "climate_index", 
-  "popularity_score", "pollution_index"
-];
+const FEATURE_COLS=["culture","nature","beaches","urban","seclusion","safety_index","cost_of_living_index","climate_index","popularity_score","pollution_index"];
+const WEIGHTS=[1,1,1,1,1,2,1.5,1,4,1];
 
-// Balanced array mapping 1:1 with your 10 active features above
-const WEIGHTS = [1, 1, 1, 1, 1, 2, 1.5, 1, 4, 1];
-
-function buildRegions() {
-  const container = document.getElementById('regions');
-  REGIONS.forEach(r => {
-    const label = document.createElement('label');
-    label.className = 'region-item';
-    label.innerHTML = `
-      <input type="checkbox" value="${r.key}" checked/>
-      <div class="region-dot">
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-          <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+function buildRegions(){
+  const c=document.getElementById('regions');
+  REGIONS.forEach(r=>{
+    const lbl=document.createElement('label');
+    lbl.className='region-item';
+    lbl.innerHTML=`<input type="checkbox" value="${r.key}" checked/>
+      <div class="region-check">
+        <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+          <path d="M1 3.5L3.2 5.5L8 1" stroke="#0D0F14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
+      <span style="font-size:0.9rem;margin-right:2px">${r.flag}</span>
       <span class="region-label">${r.label}</span>
-      <span class="region-count">${r.count}</span>
-    `;
-    container.appendChild(label);
+      <span class="region-pill" id="pill-${r.key}">—</span>`;
+    c.appendChild(lbl);
   });
 }
 
-function updateVal(input, valId) {
-  document.getElementById(valId).textContent = input.value;
-  updateSliderFill(input);
+function upd(input,valId,isRed=false){
+  const el=document.getElementById(valId);
+  el.textContent=input.value;
+  const pct=((input.value-input.min)/(input.max-input.min))*100;
+  const col=isRed?'#E05C5C':'#C9A96E';
+  input.style.background=`linear-gradient(to right,${col} ${pct}%,#252A36 ${pct}%)`;
 }
 
-function updateSliderFill(input) {
-  const pct = ((input.value - input.min) / (input.max - input.min)) * 100;
-  const color = input.classList.contains('inverted') ? '#C4743A' : '#2D5A3D';
-  input.style.background = `linear-gradient(to right, ${color} ${pct}%, #F0EDE6 ${pct}%)`;
-}
-
-function initSliders() {
-  document.querySelectorAll('input[type="range"]').forEach(updateSliderFill);
-}
-
-function getPrefs() {
-  const prefs = {};
-  FEATURE_COLS.forEach(col => {
-    const el = document.getElementById(`s-${col}`);
-    if (el) prefs[col] = parseFloat(el.value);
+function initSliders(){
+  document.querySelectorAll('input[type="range"]').forEach(el=>{
+    const isRed=el.classList.contains('red-slider');
+    const pct=((el.value-el.min)/(el.max-el.min))*100;
+    const col=isRed?'#E05C5C':'#C9A96E';
+    el.style.background=`linear-gradient(to right,${col} ${pct}%,#252A36 ${pct}%)`;
   });
-  return prefs;
 }
 
-function getRegions() {
-  return Array.from(document.querySelectorAll('#regions input[type="checkbox"]:checked'))
-    .map(cb => cb.value);
-}
-
-function weightedCosineSimilarity(userVec, cityVec, weights) {
-  let dot = 0;
-  let normUserSq = 0;
-  let normCitySq = 0;
-  let validFeaturesCount = 0;
-
-  for (let i = 0; i < userVec.length; i++) {
-    const uVal = userVec[i];
-    const cVal = cityVec[i];
-    
-    if (uVal === null || uVal === undefined || isNaN(uVal) ||
-        cVal === null || cVal === undefined || isNaN(cVal)) {
-      continue;
-    }
-
-    const w = weights[i] !== undefined ? weights[i] : 1.0;
-    const uw = uVal * w;
-    
-    dot += uw * cVal;
-    normUserSq += uw * uw;
-    normCitySq += cVal * cVal;
-    validFeaturesCount++;
-  }
-
-  if (validFeaturesCount === 0) return 0.0;
-  
-  const magnitude = Math.sqrt(normUserSq) * Math.sqrt(normCitySq);
-  return magnitude !== 0 ? (dot / magnitude) : 0.0;
-}
-
-function scoreColor(score) {
-  if (score >= 85) return '#2D5A3D';
-  if (score >= 70) return '#C4743A';
-  return '#888';
-}
-
-function renderRing(score) {
-  const r = 22, cx = 27, cy = 27;
-  const circ = 2 * Math.PI * r;
-  const dash = (score / 100) * circ;
-  const color = scoreColor(score);
-  return `
-    <svg width="54" height="54" viewBox="0 0 54 54">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#F0EDE6" stroke-width="4"/>
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="4"
-        stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}"
-        stroke-linecap="round"/>
-    </svg>
-  `;
-}
-
-function getHighlightTags(city, prefs) {
-  const tags = [];
-  const checks = [
-    { key: 'culture',    label: '🏛 Culture',    thresh: 60 },
-    { key: 'nature',     label: '🌿 Nature',      thresh: 60 },
-    { key: 'beaches',    label: '🏖 Beaches',     thresh: 60 },
-    { key: 'urban',      label: '🏙 Urban',       thresh: 65 },
-    { key: 'seclusion',  label: '🏝 Secluded',    thresh: 60 },
-  ];
-  checks.forEach(c => {
-    if ((city[c.key] ?? 0) >= c.thresh && (prefs[c.key] ?? 0) >= 50) {
-      tags.push({ label: c.label, type: 'highlight' });
-    }
+function getPrefs(){
+  const p={};
+  FEATURE_COLS.forEach(col=>{
+    const el=document.getElementById(`s-${col}`);
+    if(el)p[col]=parseFloat(el.value);
   });
-
-  if ((city['safety_index'] ?? 0) >= 70) tags.push({ label: '🔒 Safe', type: 'highlight' });
-  if ((city['cost_of_living_index'] ?? 100) <= 40) tags.push({ label: '💰 Budget-friendly', type: 'highlight' });
-  if ((city['cost_of_living_index'] ?? 0) >= 75) tags.push({ label: '💎 Luxury', type: 'warn' });
-  if ((city['pollution_index'] ?? 0) >= 65) tags.push({ label: '⚠ High pollution', type: 'warn' });
-
-  return tags.slice(0, 5);
+  return p;
 }
 
-// New highly-sensitive recommendation logic
-function runRecommend() {
-  const regions = getRegions();
-  if (regions.length === 0) {
-    document.getElementById('results-area').innerHTML =
-      `<div class="error-msg">Please select at least one region.</div>`;
+function getRegions(){
+  return Array.from(document.querySelectorAll('#regions input:checked')).map(cb=>cb.value);
+}
+
+function ringColor(score){
+  if(score>=80)return'#C9A96E';
+  if(score>=60)return'#4ECDC4';
+  return'#5C5A63';
+}
+
+function renderRing(score){
+  const r=20,cx=26,cy=26,circ=2*Math.PI*r;
+  const dash=(score/100)*circ;
+  const col=ringColor(score);
+  return`<svg width="52" height="52" viewBox="0 0 52 52">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#1E222C" stroke-width="3.5"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="3.5"
+      stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"
+      transform="rotate(-90 ${cx} ${cy})"/>
+  </svg>`;
+}
+
+function getTags(city,prefs){
+  const tags=[];
+  if((city.culture??0)>=60&&(prefs.culture??0)>=50) tags.push({t:'Culture',c:'tag-gold'});
+  if((city.nature??0)>=60&&(prefs.nature??0)>=50)   tags.push({t:'Nature',c:'tag-teal'});
+  if((city.beaches??0)>=60&&(prefs.beaches??0)>=50) tags.push({t:'Beaches',c:'tag-teal'});
+  if((city.urban??0)>=65&&(prefs.urban??0)>=50)     tags.push({t:'Urban',c:'tag-neutral'});
+  if((city.seclusion??0)>=60&&(prefs.seclusion??0)>=50) tags.push({t:'Off the beaten path',c:'tag-gold'});
+  if((city.safety_index??0)>=70) tags.push({t:'Safe',c:'tag-teal'});
+  if((city.cost_of_living_index??100)<=35) tags.push({t:'Budget-friendly',c:'tag-gold'});
+  if((city.cost_of_living_index??0)>=80)  tags.push({t:'Luxury',c:'tag-neutral'});
+  if((city.pollution_index??0)>=70)       tags.push({t:'High pollution',c:'tag-red'});
+  return tags.slice(0,4);
+}
+
+function runRecommend(){
+  const regions=getRegions();
+  if(!regions.length){
+    document.getElementById('results-area').innerHTML=`<div class="error-box">Please select at least one region to continue.</div>`;
     return;
   }
+  const prefs=getPrefs();
+  document.getElementById('results-area').innerHTML=`<div class="loading"><div class="spinner"></div><p>Scanning destinations…</p></div>`;
+  document.getElementById('find-btn').disabled=true;
+  document.getElementById('code-section').style.display='none';
 
-  const prefs = getPrefs();
-  
-  document.getElementById('results-area').innerHTML =
-    `<div class="loading"><div class="spinner"></div>Finding your destinations…</div>`;
-  document.getElementById('find-btn').disabled = true;
+  setTimeout(()=>{
+    try{
+      if(!window.cityData||!window.cityData.length){showNoData(prefs,regions);return;}
 
-  setTimeout(() => {
-    try {
-      if (typeof window.cityData === 'undefined' || !window.cityData.length) {
-        showNoData(prefs, regions);
-        return;
+      let filtered=window.cityData.filter(c=>regions.includes((c.region||'').toLowerCase()));
+      if(!filtered.length){
+        document.getElementById('results-area').innerHTML=`<div class="error-box">No cities found for the selected regions.</div>`;
+        document.getElementById('find-btn').disabled=false;return;
       }
 
-      // 1. Filter by selected regions
-      let filtered = window.cityData.filter(c =>
-        regions.includes((c.region || '').toLowerCase())
-      );
-
-      if (filtered.length === 0) {
-        document.getElementById('results-area').innerHTML =
-          `<div class="error-msg">No cities found for the selected regions.</div>`;
-        document.getElementById('find-btn').disabled = false;
-        return;
-      }
-
-      // 2. Dynamic Min-Max Normalization 
-      // This stops massive columns (like popularity) from dominating smaller ones
-      const bounds = {};
-      FEATURE_COLS.forEach(col => {
-        const vals = filtered.map(c => parseFloat(c[col])).filter(v => !isNaN(v));
-        bounds[col] = {
-          min: Math.min(...vals, 0), 
-          max: Math.max(...vals, 100)
-        };
+      const bounds={};
+      FEATURE_COLS.forEach(col=>{
+        const vals=filtered.map(c=>parseFloat(c[col])).filter(v=>!isNaN(v));
+        bounds[col]={min:Math.min(...vals,0),max:Math.max(...vals,100)};
       });
 
-      // 3. Calculate Sensitivity Scores
-      const scored = filtered.map(city => {
-        let totalPenalty = 0;
-        let totalWeights = 0;
-
-        FEATURE_COLS.forEach((col, idx) => {
-          let cityVal = parseFloat(city[col]);
-          let userVal = prefs[col];
-
-          if (isNaN(cityVal) || userVal === undefined) return;
-
-          // Normalize both values to a strict 0.0 - 1.0 scale
-          const min = bounds[col].min;
-          const max = bounds[col].max;
-          const range = max - min || 1;
-
-          let normCity = (cityVal - min) / range;
-          let normUser = (userVal - min) / range;
-
-          // For inverted scales like pollution, invert the user's intent target
-          if (col === 'pollution_index') {
-            normUser = 1.0 - normUser; 
-          }
-
-          // Calculate absolute distance penalty
-          const distance = Math.abs(normUser - normCity);
-          const w = WEIGHTS[idx] !== undefined ? WEIGHTS[idx] : 1.0;
-
-          totalPenalty += distance * w;
-          totalWeights += w;
+      const scored=filtered.map(city=>{
+        let penalty=0,tw=0;
+        FEATURE_COLS.forEach((col,idx)=>{
+          let cv=parseFloat(city[col]),uv=prefs[col];
+          if(isNaN(cv)||uv===undefined)return;
+          const{min,max}=bounds[col];const range=max-min||1;
+          let nc=(cv-min)/range,nu=(uv-min)/range;
+          if(col==='pollution_index')nu=1-nu;
+          const w=WEIGHTS[idx]??1;
+          penalty+=Math.abs(nu-nc)*w;tw+=w;
         });
-
-        // Convert penalty into a percentage match score
-        const averagePenalty = totalWeights > 0 ? (totalPenalty / totalWeights) : 1;
-        // Exponential scaling makes the sorting *very* sensitive to small slider tweaks
-        const matchScore = Math.round(Math.pow(1 - averagePenalty, 2) * 100);
-
-        return { ...city, _score: Math.max(0, Math.min(100, matchScore)) };
+        const avg=tw>0?penalty/tw:1;
+        return{...city,_score:Math.max(0,Math.min(100,Math.round(Math.pow(1-avg,2)*100)))};
       });
 
-      // 4. Sort and render top 15
-      scored.sort((a, b) => b._score - a._score);
-      const top = scored.slice(0, 15);
-
-      renderResults(top, prefs);
-    } catch(e) {
-      console.error(e);
-      document.getElementById('results-area').innerHTML =
-        `<div class="error-msg">Error: ${e.message}</div>`;
+      scored.sort((a,b)=>b._score-a._score);
+      renderResults(scored.slice(0,15),prefs);
+      showCodeHint(prefs,regions);
+    }catch(e){
+      document.getElementById('results-area').innerHTML=`<div class="error-box">Error: ${e.message}</div>`;
     }
-    document.getElementById('find-btn').disabled = false;
-  }, 200);
+    document.getElementById('find-btn').disabled=false;
+  },220);
 }
 
-function renderResults(cities, prefs) {
-  const area = document.getElementById('results-area');
-  document.getElementById('results-count').textContent = `Top ${cities.length} matches`;
-
-  const cards = cities.map((city, i) => {
-    const score = city._score;
-    const tags = getHighlightTags(city, prefs);
-    const tagHtml = tags.map(t =>
-      `<span class="tag ${t.type}">${t.label}</span>`
-    ).join('');
-    const isTop = i < 3;
-
-    return `
-      <div class="city-card" style="animation-delay:${i * 0.04}s">
-        <div class="city-rank ${isTop ? 'top' : ''}">${i + 1}</div>
-        <div class="city-info">
-          <div class="city-name">${city.city || 'Unknown'}</div>
-          <div class="city-country">${city.country || ''} &middot; ${(city.region || '').replace(/_/g,' ')}</div>
-          <div class="city-tags">${tagHtml}</div>
-          <div class="city-desc">${city.short_description || ''}</div>
-        </div>
-        <div class="score-ring">
-          ${renderRing(score)}
-          <div class="score-text">
-            ${score}<small>%</small>
-          </div>
+function renderResults(cities,prefs){
+  document.getElementById('results-meta').textContent=`${cities.length} matches`;
+  const html=cities.map((city,i)=>{
+    const score=city._score,isTop=i<3;
+    const tags=getTags(city,prefs);
+    const tagHtml=tags.map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('');
+    const region=(city.region||'').replace(/_/g,' ');
+    return`<div class="city-card${isTop?' gold-card':''}" style="animation-delay:${i*0.04}s">
+      <div class="city-rank${isTop?' gold':''}">${i+1}</div>
+      <div>
+        <div class="city-name">${city.city||'Unknown'}</div>
+        <div class="city-location">${city.country||''} &middot; ${region}</div>
+        <div class="tags">${tagHtml}</div>
+        ${city.short_description?`<div class="city-desc">${city.short_description}</div>`:''}
+      </div>
+      <div class="ring-wrap">
+        ${renderRing(score)}
+        <div class="ring-inner">
+          <span class="ring-num" style="color:${ringColor(score)}">${score}</span>
+          <span class="ring-pct">%</span>
         </div>
       </div>
-    `;
+    </div>`;
   }).join('');
-
-  area.innerHTML = `<div class="cards">${cards}</div>`;
+  document.getElementById('results-area').innerHTML=`<div class="cards">${html}</div>`;
 }
 
-function showNoData(prefs, regions) {
-  const regionStr = regions.map(r => `"${r}"`).join(', ');
-  const prefsStr = Object.entries(prefs)
-    .map(([k,v]) => `    "${k}": ${v}`)
-    .join(',\n');
-
-  document.getElementById('results-area').innerHTML = `
-    <div class="placeholder">
-      <div class="placeholder-icon">📊</div>
-      <p>No active dataset loaded in this HTML file.<br/>
-      Please ensure 'city_data.json' is located in the same directory.</p>
-    </div>
-  `;
-  showCodeHint(prefs, regions);
+function showNoData(prefs,regions){
+  document.getElementById('results-area').innerHTML=`<div class="placeholder">
+    <span class="placeholder-icon">📊</span>
+    <p>No dataset loaded. Place <strong>city_data.json</strong> in the same folder as this file,<br/>or run the Python code below in your notebook.</p>
+  </div>`;
+  showCodeHint(prefs,regions);
+  document.getElementById('find-btn').disabled=false;
 }
 
-function showCodeHint(prefs, regions) {
-  const regionStr = regions.map(r => `"${r}"`).join(', ');
-  const prefsStr = Object.entries(prefs)
-    .map(([k,v]) => `    "${k}": ${v}`)
-    .join(',\n');
-
-  const codeText = `regions = [${regionStr}]
+function showCodeHint(prefs,regions){
+  const rStr=regions.map(r=>`"${r}"`).join(', ');
+  const pStr=Object.entries(prefs).map(([k,v])=>`    "${k}": ${v}`).join(',\n');
+  document.getElementById('code-text').textContent=`regions = [${rStr}]
 df_filtered = df_merged[df_merged["region"].str.lower().isin(regions)]
 
-user_prefs = {
-${prefsStr}
-}
+user_prefs = {\n${pStr}\n}
 
-feature_cols = [
-    "culture","nature", "beaches", "urban", "seclusion", "safety_index", "cost_of_living_index",
-    "climate_index", "popularity_score", 'pollution_index'
-]
-
-weights = [1, 1, 1, 1, 1, 2, 1.5, 1, 4, 1]
+feature_cols = ${JSON.stringify(FEATURE_COLS)}
+weights = ${JSON.stringify(WEIGHTS)}
 
 results = recommend(user_prefs, df_filtered, feature_cols, weights, top_n=15)
 print(results[["city", "country", "match_score"]])`;
+  document.getElementById('code-section').style.display='none';
+}
 
-  document.getElementById('code-text').textContent = codeText;
-  document.getElementById('code-output').style.display = 'none';
+function updateRegionCounts(){
+  if(!window.cityData||!window.cityData.length)return;
+  const counts={};
+  window.cityData.forEach(c=>{if(c.region)counts[c.region]=(counts[c.region]||0)+1;});
+  REGIONS.forEach(r=>{
+    const el=document.getElementById(`pill-${r.key}`);
+    if(el)el.textContent=counts[r.key]?`${counts[r.key]}`:'0';
+  });
+  const total=window.cityData.length;
+  document.getElementById('stat-num').textContent=total.toLocaleString();
+  document.getElementById('header-stat').style.opacity='1';
 }
 
 buildRegions();
 initSliders();
+window.cityData=[];
 
-// Dynamic file loading
-window.cityData = [];
-
-fetch('city_data.json', {
-  headers: {
-    'Content-Type': 'application/json; charset=utf-8'
-  }
-})
-  .then(response => {
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json();
-  })
-  .then(data => {
-    window.cityData = data;
-    updateRegionCounts();
-  })
-  .catch(error => {
-    console.error("Failed to load city dataset:", error);
-  });
-
-function updateRegionCounts() {
-  if (window.cityData.length > 0) {
-    const counts = {};
-    window.cityData.forEach(c => { 
-      if (c.region) counts[c.region] = (counts[c.region] || 0) + 1; 
-    });
-    
-    document.querySelectorAll('#regions .region-item').forEach(item => {
-      const key = item.querySelector('input').value;
-      if (counts[key] !== undefined) {
-        item.querySelector('.region-count').textContent = `${counts[key]} cities`;
-      } else {
-        item.querySelector('.region-count').textContent = `0 cities`;
-      }
-    });
-  }
-}
+fetch('city_data.json')
+  .then(r=>{if(!r.ok)throw new Error(r.status);return r.json();})
+  .then(d=>{window.cityData=d;updateRegionCounts();})
+  .catch(()=>{});
 </script>
-
 </body>
 </html>
