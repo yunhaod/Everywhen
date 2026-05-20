@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Travel Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F4EE;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --border: rgba(0,0,0,0.1);
+    --text: #1A1814;
+    --text2: #6B6760;
+    --text3: #9E9B95;
+    --accent: #2D5A3D;
+    --accent-light: #E8F0EA;
+    --accent2: #C4743A;
+    --accent2-light: #FAF0E8;
+    --danger: #C4453A;
+    --tag-bg: #EDE9E0;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Header */
+  .header {
+    background: var(--accent);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 40px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 0.4rem;
+  }
+  .header p {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    font-weight: 300;
+  }
+
+  /* Main layout */
+  .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+
+  /* Two-col layout */
+  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; align-items: start; }
+
+  @media (max-width: 720px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* Panel */
+  .panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-header h2 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+  .panel-body { padding: 1rem 1.25rem; }
+
+  /* Region checkboxes */
+  .regions { display: flex; flex-direction: column; gap: 6px; }
+  .region-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .region-item:hover { background: var(--surface2); }
+  .region-item input[type="checkbox"] { display: none; }
+  .region-dot {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .region-dot svg { display: none; }
+  input[type="checkbox"]:checked + .region-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  input[type="checkbox"]:checked + .region-dot svg { display: block; }
+  .region-label { font-size: 0.875rem; font-weight: 400; }
+  .region-count { margin-left: auto; font-size: 0.75rem; color: var(--text3); }
+
+  /* Sliders */
+  .sliders { display: flex; flex-direction: column; gap: 0; }
+  .slider-section { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--border); }
+  .slider-section:last-child { border-bottom: none; }
+  .slider-section-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.65rem;
+  }
+  .slider-row:last-child { margin-bottom: 0; }
+  .slider-label {
+    font-size: 0.82rem;
+    color: var(--text2);
+    width: 110px;
+    flex-shrink: 0;
+  }
+  .slider-wrap { flex: 1; position: relative; }
+  input[type="range"] {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--surface2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+  input[type="range"].inverted::-webkit-slider-thumb { background: var(--accent2); box-shadow: 0 0 0 1.5px var(--accent2); }
+  .slider-val {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text);
+    min-width: 26px;
+    text-align: right;
+  }
+
+  /* Find button */
+  .find-btn {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s, transform 0.1s;
+    margin-top: 1rem;
+  }
+  .find-btn:hover { opacity: 0.9; }
+  .find-btn:active { transform: scale(0.99); }
+  .find-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Results */
+  .results-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .results-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+  }
+  .results-count { font-size: 0.8rem; color: var(--text3); }
+
+  .placeholder {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .placeholder-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.3; }
+  .placeholder p { font-size: 0.9rem; color: var(--text3); line-height: 1.6; }
+
+  /* City cards */
+  .cards { display: flex; flex-direction: column; gap: 10px; }
+
+  .city-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    animation: fadeUp 0.3s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .city-rank {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--text3);
+    text-align: center;
+    line-height: 1;
+  }
+  .city-rank.top { color: var(--accent); }
+
+  .city-info {}
+  .city-name {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .city-country {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .city-desc {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.4;
+    margin-top: 8px;
+    font-weight: 300;
+  }
+
+  .city-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--tag-bg);
+    color: var(--text2);
+    font-weight: 400;
+  }
+  .tag.highlight { background: var(--accent-light); color: var(--accent); }
+  .tag.warn { background: var(--accent2-light); color: var(--accent2); }
+
+  .score-ring {
+    width: 54px; height: 54px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .score-text small { font-size: 0.55rem; color: var(--text3); font-weight: 400; }
+
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text3);
+    font-size: 0.9rem;
+  }
+  .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Error */
+  .error-msg {
+    background: #FEF2F2;
+    border: 0.5px solid #FECACA;
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--danger);
+  }
+
+  /* Code block for Python output */
+  .code-hint {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: var(--text2);
+    margin-top: 1rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>Where should you go?</h1>
+    <p>Tune your preferences. We'll find your perfect destination.</p>
+  </div>
+</div>
+
+<div class="main">
+  <div class="layout">
+
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Region</h2>
+        </div>
+        <div class="panel-body">
+          <div class="regions" id="regions">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Preferences</h2>
+        </div>
+        <div class="sliders">
+
+          <div class="slider-section">
+            <div class="slider-section-title">Vibe</div>
+            <div class="slider-row">
+              <span class="slider-label">Culture</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="70" step="1" id="s-culture" oninput="updateVal(this,'v-culture')"/></div>
+              <span class="slider-val" id="v-culture">70</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Nature</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="30" step="1" id="s-nature" oninput="updateVal(this,'v-nature')"/></div>
+              <span class="slider-val" id="v-nature">30</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Beaches</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="20" step="1" id="s-beaches" oninput="updateVal(this,'v-beaches')"/></div>
+              <span class="slider-val" id="v-beaches">20</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Urban</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="80" step="1" id="s-urban" oninput="updateVal(this,'v-urban')"/></div>
+              <span class="slider-val" id="v-urban">80</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Seclusion</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="20" step="1" id="s-seclusion" oninput="updateVal(this,'v-seclusion')"/></div>
+              <span class="slider-val" id="v-seclusion">20</span>
+            </div>
+          </div>
+
+          <div class="slider-section">
+            <div class="slider-section-title">Quality & Popularity</div>
+            <div class="slider-row">
+              <span class="slider-label">Safety</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="70" step="1" id="s-safety_index" oninput="updateVal(this,'v-safety')"/></div>
+              <span class="slider-val" id="v-safety">70</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Popularity</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="80" step="1" id="s-popularity_score" oninput="updateVal(this,'v-pop')"/></div>
+              <span class="slider-val" id="v-pop">80</span>
+            </div>
+          </div>
+
+          <div class="slider-section">
+            <div class="slider-section-title">Budget & Climate</div>
+            <div class="slider-row">
+              <span class="slider-label">Cost of living</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="60" step="1" id="s-cost_of_living_index" oninput="updateVal(this,'v-cost')"/></div>
+              <span class="slider-val" id="v-cost">60</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Climate</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="55" step="1" id="s-climate_index" oninput="updateVal(this,'v-climate')"/></div>
+              <span class="slider-val" id="v-climate">55</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Pollution</span>
+              <div class="slider-wrap"><input type="range" min="0" max="100" value="50" step="1" id="s-pollution_index" class="inverted" oninput="updateVal(this,'v-pollution')"/></div>
+              <span class="slider-val" id="v-pollution">50</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="find-btn" id="find-btn" onclick="runRecommend()">
+        Find destinations
+      </button>
+
+    </div>
+
+    <div>
+      <div class="results-header">
+        <h2 id="results-title">Your destinations</h2>
+        <span class="results-count" id="results-count"></span>
+      </div>
+      <div id="results-area">
+        <div class="placeholder">
+          <div class="placeholder-icon">✈</div>
+          <p>Set your preferences and choose at least one region,<br/>then click <strong>Find destinations</strong>.</p>
+        </div>
+      </div>
+      <div id="code-output" style="display:none;">
+        <p style="font-size:0.78rem; color:var(--text3); margin: 1.5rem 0 0.4rem;">Run this in your Jupyter notebook:</p>
+        <div class="code-hint" id="code-text"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const REGIONS = [
+  { key: "europe",        label: "Europe",        count: "Active" },
+  { key: "asia",          label: "Asia",          count: "Active" },
+  { key: "north_america", label: "North America", count: "Active" },
+  { key: "south_america", label: "South America", count: "Active" },
+  { key: "africa",        label: "Africa",         count: "Active" },
+  { key: "oceania",       label: "Oceania",        count: "Active" },
+  { key: "middle_east",   label: "Middle East",   count: "Active" },
+];
+
+// Updated 10 features matching python selection exactly
+const FEATURE_COLS = [
+  "culture", "nature", "beaches", "urban", "seclusion", 
+  "safety_index", "cost_of_living_index", "climate_index", 
+  "popularity_score", "pollution_index"
+];
+
+// Balanced array mapping 1:1 with your 10 active features above
+const WEIGHTS = [1, 1, 1, 1, 1, 2, 1.5, 1, 4, 1];
+
+function buildRegions() {
+  const container = document.getElementById('regions');
+  REGIONS.forEach(r => {
+    const label = document.createElement('label');
+    label.className = 'region-item';
+    label.innerHTML = `
+      <input type="checkbox" value="${r.key}" checked/>
+      <div class="region-dot">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="region-label">${r.label}</span>
+      <span class="region-count">${r.count}</span>
+    `;
+    container.appendChild(label);
+  });
+}
+
+function updateVal(input, valId) {
+  document.getElementById(valId).textContent = input.value;
+  updateSliderFill(input);
+}
+
+function updateSliderFill(input) {
+  const pct = ((input.value - input.min) / (input.max - input.min)) * 100;
+  const color = input.classList.contains('inverted') ? '#C4743A' : '#2D5A3D';
+  input.style.background = `linear-gradient(to right, ${color} ${pct}%, #F0EDE6 ${pct}%)`;
+}
+
+function initSliders() {
+  document.querySelectorAll('input[type="range"]').forEach(updateSliderFill);
+}
+
+function getPrefs() {
+  const prefs = {};
+  FEATURE_COLS.forEach(col => {
+    const el = document.getElementById(`s-${col}`);
+    if (el) prefs[col] = parseFloat(el.value);
+  });
+  return prefs;
+}
+
+function getRegions() {
+  return Array.from(document.querySelectorAll('#regions input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
+}
+
+function weightedCosineSimilarity(userVec, cityVec, weights) {
+  let dot = 0;
+  let normUserSq = 0;
+  let normCitySq = 0;
+  let validFeaturesCount = 0;
+
+  for (let i = 0; i < userVec.length; i++) {
+    const uVal = userVec[i];
+    const cVal = cityVec[i];
+    
+    if (uVal === null || uVal === undefined || isNaN(uVal) ||
+        cVal === null || cVal === undefined || isNaN(cVal)) {
+      continue;
+    }
+
+    const w = weights[i] !== undefined ? weights[i] : 1.0;
+    const uw = uVal * w;
+    
+    dot += uw * cVal;
+    normUserSq += uw * uw;
+    normCitySq += cVal * cVal;
+    validFeaturesCount++;
+  }
+
+  if (validFeaturesCount === 0) return 0.0;
+  
+  const magnitude = Math.sqrt(normUserSq) * Math.sqrt(normCitySq);
+  return magnitude !== 0 ? (dot / magnitude) : 0.0;
+}
+
+function scoreColor(score) {
+  if (score >= 85) return '#2D5A3D';
+  if (score >= 70) return '#C4743A';
+  return '#888';
+}
+
+function renderRing(score) {
+  const r = 22, cx = 27, cy = 27;
+  const circ = 2 * Math.PI * r;
+  const dash = (score / 100) * circ;
+  const color = scoreColor(score);
+  return `
+    <svg width="54" height="54" viewBox="0 0 54 54">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#F0EDE6" stroke-width="4"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="4"
+        stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}"
+        stroke-linecap="round"/>
+    </svg>
+  `;
+}
+
+function getHighlightTags(city, prefs) {
+  const tags = [];
+  const checks = [
+    { key: 'culture',    label: '🏛 Culture',    thresh: 60 },
+    { key: 'nature',     label: '🌿 Nature',      thresh: 60 },
+    { key: 'beaches',    label: '🏖 Beaches',     thresh: 60 },
+    { key: 'urban',      label: '🏙 Urban',       thresh: 65 },
+    { key: 'seclusion',  label: '🏝 Secluded',    thresh: 60 },
+  ];
+  checks.forEach(c => {
+    if ((city[c.key] ?? 0) >= c.thresh && (prefs[c.key] ?? 0) >= 50) {
+      tags.push({ label: c.label, type: 'highlight' });
+    }
+  });
+
+  if ((city['safety_index'] ?? 0) >= 70) tags.push({ label: '🔒 Safe', type: 'highlight' });
+  if ((city['cost_of_living_index'] ?? 100) <= 40) tags.push({ label: '💰 Budget-friendly', type: 'highlight' });
+  if ((city['cost_of_living_index'] ?? 0) >= 75) tags.push({ label: '💎 Luxury', type: 'warn' });
+  if ((city['pollution_index'] ?? 0) >= 65) tags.push({ label: '⚠ High pollution', type: 'warn' });
+
+  return tags.slice(0, 5);
+}
+
+// New highly-sensitive recommendation logic
+function runRecommend() {
+  const regions = getRegions();
+  if (regions.length === 0) {
+    document.getElementById('results-area').innerHTML =
+      `<div class="error-msg">Please select at least one region.</div>`;
+    return;
+  }
+
+  const prefs = getPrefs();
+  
+  document.getElementById('results-area').innerHTML =
+    `<div class="loading"><div class="spinner"></div>Finding your destinations…</div>`;
+  document.getElementById('find-btn').disabled = true;
+
+  setTimeout(() => {
+    try {
+      if (typeof window.cityData === 'undefined' || !window.cityData.length) {
+        showNoData(prefs, regions);
+        return;
+      }
+
+      // 1. Filter by selected regions
+      let filtered = window.cityData.filter(c =>
+        regions.includes((c.region || '').toLowerCase())
+      );
+
+      if (filtered.length === 0) {
+        document.getElementById('results-area').innerHTML =
+          `<div class="error-msg">No cities found for the selected regions.</div>`;
+        document.getElementById('find-btn').disabled = false;
+        return;
+      }
+
+      // 2. Dynamic Min-Max Normalization 
+      // This stops massive columns (like popularity) from dominating smaller ones
+      const bounds = {};
+      FEATURE_COLS.forEach(col => {
+        const vals = filtered.map(c => parseFloat(c[col])).filter(v => !isNaN(v));
+        bounds[col] = {
+          min: Math.min(...vals, 0), 
+          max: Math.max(...vals, 100)
+        };
+      });
+
+      // 3. Calculate Sensitivity Scores
+      const scored = filtered.map(city => {
+        let totalPenalty = 0;
+        let totalWeights = 0;
+
+        FEATURE_COLS.forEach((col, idx) => {
+          let cityVal = parseFloat(city[col]);
+          let userVal = prefs[col];
+
+          if (isNaN(cityVal) || userVal === undefined) return;
+
+          // Normalize both values to a strict 0.0 - 1.0 scale
+          const min = bounds[col].min;
+          const max = bounds[col].max;
+          const range = max - min || 1;
+
+          let normCity = (cityVal - min) / range;
+          let normUser = (userVal - min) / range;
+
+          // For inverted scales like pollution, invert the user's intent target
+          if (col === 'pollution_index') {
+            normUser = 1.0 - normUser; 
+          }
+
+          // Calculate absolute distance penalty
+          const distance = Math.abs(normUser - normCity);
+          const w = WEIGHTS[idx] !== undefined ? WEIGHTS[idx] : 1.0;
+
+          totalPenalty += distance * w;
+          totalWeights += w;
+        });
+
+        // Convert penalty into a percentage match score
+        const averagePenalty = totalWeights > 0 ? (totalPenalty / totalWeights) : 1;
+        // Exponential scaling makes the sorting *very* sensitive to small slider tweaks
+        const matchScore = Math.round(Math.pow(1 - averagePenalty, 2) * 100);
+
+        return { ...city, _score: Math.max(0, Math.min(100, matchScore)) };
+      });
+
+      // 4. Sort and render top 15
+      scored.sort((a, b) => b._score - a._score);
+      const top = scored.slice(0, 15);
+
+      renderResults(top, prefs);
+    } catch(e) {
+      console.error(e);
+      document.getElementById('results-area').innerHTML =
+        `<div class="error-msg">Error: ${e.message}</div>`;
+    }
+    document.getElementById('find-btn').disabled = false;
+  }, 200);
+}
+
+function renderResults(cities, prefs) {
+  const area = document.getElementById('results-area');
+  document.getElementById('results-count').textContent = `Top ${cities.length} matches`;
+
+  const cards = cities.map((city, i) => {
+    const score = city._score;
+    const tags = getHighlightTags(city, prefs);
+    const tagHtml = tags.map(t =>
+      `<span class="tag ${t.type}">${t.label}</span>`
+    ).join('');
+    const isTop = i < 3;
+
+    return `
+      <div class="city-card" style="animation-delay:${i * 0.04}s">
+        <div class="city-rank ${isTop ? 'top' : ''}">${i + 1}</div>
+        <div class="city-info">
+          <div class="city-name">${city.city || 'Unknown'}</div>
+          <div class="city-country">${city.country || ''} &middot; ${(city.region || '').replace(/_/g,' ')}</div>
+          <div class="city-tags">${tagHtml}</div>
+          <div class="city-desc">${city.short_description || ''}</div>
+        </div>
+        <div class="score-ring">
+          ${renderRing(score)}
+          <div class="score-text">
+            ${score}<small>%</small>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  area.innerHTML = `<div class="cards">${cards}</div>`;
+}
+
+function showNoData(prefs, regions) {
+  const regionStr = regions.map(r => `"${r}"`).join(', ');
+  const prefsStr = Object.entries(prefs)
+    .map(([k,v]) => `    "${k}": ${v}`)
+    .join(',\n');
+
+  document.getElementById('results-area').innerHTML = `
+    <div class="placeholder">
+      <div class="placeholder-icon">📊</div>
+      <p>No active dataset loaded in this HTML file.<br/>
+      Please ensure 'city_data.json' is located in the same directory.</p>
+    </div>
+  `;
+  showCodeHint(prefs, regions);
+}
+
+function showCodeHint(prefs, regions) {
+  const regionStr = regions.map(r => `"${r}"`).join(', ');
+  const prefsStr = Object.entries(prefs)
+    .map(([k,v]) => `    "${k}": ${v}`)
+    .join(',\n');
+
+  const codeText = `regions = [${regionStr}]
+df_filtered = df_merged[df_merged["region"].str.lower().isin(regions)]
+
+user_prefs = {
+${prefsStr}
+}
+
+feature_cols = [
+    "culture","nature", "beaches", "urban", "seclusion", "safety_index", "cost_of_living_index",
+    "climate_index", "popularity_score", 'pollution_index'
+]
+
+weights = [1, 1, 1, 1, 1, 2, 1.5, 1, 4, 1]
+
+results = recommend(user_prefs, df_filtered, feature_cols, weights, top_n=15)
+print(results[["city", "country", "match_score"]])`;
+
+  document.getElementById('code-text').textContent = codeText;
+  document.getElementById('code-output').style.display = 'none';
+}
+
+buildRegions();
+initSliders();
+
+// Dynamic file loading
+window.cityData = [];
+
+fetch('city_data.json', {
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  }
+})
+  .then(response => {
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
+  })
+  .then(data => {
+    window.cityData = data;
+    updateRegionCounts();
+  })
+  .catch(error => {
+    console.error("Failed to load city dataset:", error);
+  });
+
+function updateRegionCounts() {
+  if (window.cityData.length > 0) {
+    const counts = {};
+    window.cityData.forEach(c => { 
+      if (c.region) counts[c.region] = (counts[c.region] || 0) + 1; 
+    });
+    
+    document.querySelectorAll('#regions .region-item').forEach(item => {
+      const key = item.querySelector('input').value;
+      if (counts[key] !== undefined) {
+        item.querySelector('.region-count').textContent = `${counts[key]} cities`;
+      } else {
+        item.querySelector('.region-count').textContent = `0 cities`;
+      }
+    });
+  }
+}
+</script>
+
+</body>
+</html>
