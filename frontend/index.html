@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Everywhen</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <p class="logo">everywhen <span class="logo-star">✦</span></p>
+    <div class="nav-item active"><i class="ti ti-home"></i> Home</div>
+    <div class="nav-item"><i class="ti ti-compass"></i> Explore</div>
+    <div class="nav-item"><i class="ti ti-map"></i> Trips</div>
+    <div class="nav-item"><i class="ti ti-heart"></i> Saved</div>
+    <div class="nav-item"><i class="ti ti-notebook"></i> Memos</div>
+    <div class="nav-item"><i class="ti ti-user"></i> Profile</div>
+    <div class="sidebar-footer">
+      <i class="ti ti-backpack" style="font-size:32px;color:#D4A017;display:block;margin-bottom:6px;"></i>
+      <p>collect memories,<br/>not things</p>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <p class="hero-title">what's the plan <span>today?</span></p>
+    <p class="hero-sub">it's a good day to have a good day</p>
+    <div class="search-bar">
+      <i class="ti ti-sparkles" style="font-size:16px;color:#D4A017;"></i>
+      <span>i feel like... e.g. a slow coastal town, street food markets...</span>
+      <button class="search-btn"><i class="ti ti-arrow-right"></i></button>
+    </div>
+
+    <p class="section-title">pick your vibe ~</p>
+    <div class="vibe-row">
+      <div class="vibe-card active" onclick="setVibe(this)">
+        <div class="vibe-icon">
+          <img src="https://loremflickr.com/240/100/beach,ocean,tropical" alt="Beach" />
+          <i class="ti ti-beach vibe-overlay-icon"></i>
+        </div>
+        <p class="vibe-label">Beach days</p>
+        <p class="vibe-sub">sun, sand &amp; good vibes</p>
+      </div>
+      <div class="vibe-card" onclick="setVibe(this)">
+        <div class="vibe-icon">
+          <img src="https://loremflickr.com/240/100/city,street,urban" alt="City" />
+          <i class="ti ti-building vibe-overlay-icon"></i>
+        </div>
+        <p class="vibe-label">City strolls</p>
+        <p class="vibe-sub">coffee &amp; cute streets</p>
+      </div>
+      <div class="vibe-card" onclick="setVibe(this)">
+        <div class="vibe-icon">
+          <img src="https://loremflickr.com/240/100/mountain,forest,hiking" alt="Wild" />
+          <i class="ti ti-mountain vibe-overlay-icon"></i>
+        </div>
+        <p class="vibe-label">Into the wild</p>
+        <p class="vibe-sub">mountains &amp; fresh air</p>
+      </div>
+      <div class="vibe-card" onclick="setVibe(this)">
+        <div class="vibe-icon">
+          <img src="https://loremflickr.com/240/100/village,countryside,cozy" alt="Cozy" />
+          <i class="ti ti-world vibe-overlay-icon"></i>
+        </div>
+        <p class="vibe-label">Slow &amp; cozy</p>
+        <p class="vibe-sub">little towns, big peace</p>
+      </div>
+    </div>
+
+    <p class="section-title">recently explored ✦</p>
+    <div class="explore-grid">
+      <div class="explore-card">
+        <img src="https://loremflickr.com/400/220/tokyo,japan" alt="Tokyo" />
+        <div class="explore-overlay">
+          <p class="explore-name">Tokyo, Japan</p>
+          <p class="explore-tag">Urban · Culture</p>
+        </div>
+      </div>
+      <div class="explore-card">
+        <img src="https://loremflickr.com/400/220/barcelona,spain" alt="Barcelona" />
+        <div class="explore-overlay">
+          <p class="explore-name">Barcelona, Spain</p>
+          <p class="explore-tag">Beaches · City</p>
+        </div>
+      </div>
+      <div class="explore-card">
+        <img src="https://loremflickr.com/400/220/bali,indonesia,rice" alt="Bali" />
+        <div class="explore-overlay">
+          <p class="explore-name">Bali, Indonesia</p>
+          <p class="explore-tag">Nature · Slow</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">inspiration for you</p>
+    <div class="inspo-row">
+      <div class="inspo-card" style="background:#FEF5D4;padding:0;overflow:hidden;">
+        <img src="https://loremflickr.com/300/70/travel,backpack,solo" class="inspo-img" alt="" />
+        <div class="inspo-body">
+          <i class="ti ti-pin" style="color:#A07C1E;"></i>
+          <p style="color:#7A5500;">Solo trips that changed lives</p>
+          <small style="color:#B08A30;">12 stories</small>
+        </div>
+      </div>
+      <div class="inspo-card" style="background:#E6F4EC;padding:0;overflow:hidden;">
+        <img src="https://loremflickr.com/300/70/sunrise,landscape,sky" class="inspo-img" alt="" />
+        <div class="inspo-body">
+          <i class="ti ti-sun" style="color:#2E7A50;"></i>
+          <p style="color:#1A5034;">Best sunrise spots to add to your list</p>
+          <small style="color:#3A8A5A;">8 places</small>
+        </div>
+      </div>
+      <div class="inspo-card" style="background:#F0EEFF;padding:0;overflow:hidden;">
+        <img src="https://loremflickr.com/300/70/autumn,seasons,nature" class="inspo-img" alt="" />
+        <div class="inspo-body">
+          <i class="ti ti-list" style="color:#6655CC;"></i>
+          <p style="color:#3B2A99;">Bucket list ideas for every season</p>
+          <small style="color:#7766DD;">24 ideas</small>
+        </div>
+      </div>
+      <div class="inspo-card" style="background:#FFF0F0;display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <i class="ti ti-mood-smile" style="color:#CC4444;"></i>
+          <p style="color:#882222;">Not sure where to go?</p>
+          <small style="color:#CC6666;">find a place for your mood</small>
+        </div>
+        <button class="surprise-btn">Surprise me!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="right-card">
+      <p class="panel-label">Your upcoming trip</p>
+      <div class="trip-img">
+        <img src="https://loremflickr.com/400/160/lisbon,portugal" alt="Lisbon" />
+      </div>
+      <p class="trip-name">Lisbon, Portugal</p>
+      <p class="trip-dates">Oct 12 – Oct 19, 2024</p>
+      <div class="countdown">
+        <div class="countdown-box"><p class="num" id="d">12</p><p class="unit">days</p></div>
+        <div class="countdown-box"><p class="num" id="h">08</p><p class="unit">hrs</p></div>
+        <div class="countdown-box"><p class="num" id="m">42</p><p class="unit">mins</p></div>
+      </div>
+    </div>
+
+    <div class="right-card">
+      <p class="panel-label">Your happy places</p>
+      <div class="place-row">
+        <div class="place-thumb"><img src="https://loremflickr.com/72/72/lisbon,portugal" alt="Lisbon" /></div>
+        <div>
+          <p class="place-name">Lisbon, Portugal</p>
+          <p class="place-count">9 recs saved</p>
+        </div>
+        <i class="ti ti-heart heart-icon"></i>
+      </div>
+      <div class="place-row">
+        <div class="place-thumb"><img src="https://loremflickr.com/72/72/kyoto,japan,temple" alt="Kyoto" /></div>
+        <div>
+          <p class="place-name">Kyoto, Japan</p>
+          <p class="place-count">14 recs saved</p>
+        </div>
+        <i class="ti ti-heart heart-icon"></i>
+      </div>
+      <div class="place-row">
+        <div class="place-thumb"><img src="https://loremflickr.com/72/72/oaxaca,mexico" alt="Oaxaca" /></div>
+        <div>
+          <p class="place-name">Oaxaca, Mexico</p>
+          <p class="place-count">7 recs saved</p>
+        </div>
+        <i class="ti ti-heart heart-icon"></i>
+      </div>
+      <div class="place-row">
+        <div class="place-thumb"><img src="https://loremflickr.com/72/72/barcelona,spain" alt="Barcelona" /></div>
+        <div>
+          <p class="place-name">Barcelona, Spain</p>
+          <p class="place-count">11 recs saved</p>
+        </div>
+        <i class="ti ti-heart heart-icon"></i>
+      </div>
+      <div class="place-row">
+        <div class="place-thumb"><img src="https://loremflickr.com/72/72/bali,indonesia,temple" alt="Bali" /></div>
+        <div>
+          <p class="place-name">Bali, Indonesia</p>
+          <p class="place-count">5 recs saved</p>
+        </div>
+        <i class="ti ti-heart heart-icon"></i>
+      </div>
+      <a class="see-all">See all saved places →</a>
+    </div>
+  </div>
+
+</div>
+<script src="main.js" defer></script>
+</body>
+</html>
