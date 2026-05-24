@@ -15,12 +15,18 @@
   <!-- SIDEBAR -->
   <div class="sidebar">
     <p class="logo">everywhen <span class="logo-star">✦</span></p>
-    <div class="nav-item active"><i class="ti ti-home"></i> Home</div>
-    <div class="nav-item"><i class="ti ti-compass"></i> Explore</div>
-    <div class="nav-item"><i class="ti ti-map"></i> Trips</div>
-    <div class="nav-item"><i class="ti ti-heart"></i> Saved</div>
-    <div class="nav-item"><i class="ti ti-notebook"></i> Memos</div>
-    <div class="nav-item"><i class="ti ti-user"></i> Profile</div>
+    <div class="nav-item active" data-page="home"><i class="ti ti-home"></i> Home</div>
+    <div class="nav-item" data-page="explore"><i class="ti ti-compass"></i> Explore</div>
+    <div class="nav-item" data-page="trips"><i class="ti ti-map"></i> Trips</div>
+    <div class="nav-item" data-page="saved"><i class="ti ti-heart"></i> Saved</div>
+    <div class="nav-item" data-page="profile"><i class="ti ti-user"></i> Profile</div>
+    <div class="nav-item" data-page="tools"><i class="ti ti-tool"></i> Tools</div>
+    <p class="nav-section-label" id="upcoming-toggle">
+      upcoming <i class="ti ti-chevron-right nav-section-chevron"></i>
+    </p>
+    <div class="nav-section-items" id="upcoming-items">
+      <div class="nav-item" data-page="map"><i class="ti ti-map-pin"></i> Map</div>
+    </div>
     <div class="sidebar-footer">
       <i class="ti ti-backpack" style="font-size:32px;color:#D4A017;display:block;margin-bottom:6px;"></i>
       <p>collect memories,<br/>not things</p>
@@ -29,110 +35,710 @@
 
   <!-- MAIN -->
   <div class="main">
-    <p class="hero-title">what's the plan <span>today?</span></p>
-    <p class="hero-sub">it's a good day to have a good day</p>
-    <div class="search-bar">
-      <i class="ti ti-sparkles" style="font-size:16px;color:#D4A017;"></i>
-      <span>i feel like... e.g. a slow coastal town, street food markets...</span>
-      <button class="search-btn"><i class="ti ti-arrow-right"></i></button>
-    </div>
 
-    <p class="section-title">pick your vibe ~</p>
-    <div class="vibe-row">
-      <div class="vibe-card active" onclick="setVibe(this)">
-        <div class="vibe-icon">
-          <img src="https://loremflickr.com/240/100/beach,ocean,tropical" alt="Beach" />
-          <i class="ti ti-beach vibe-overlay-icon"></i>
-        </div>
-        <p class="vibe-label">Beach days</p>
-        <p class="vibe-sub">sun, sand &amp; good vibes</p>
+    <!-- PAGE: HOME -->
+    <div class="page active" id="page-home">
+      <p class="hero-title">what's the plan <span>today?</span></p>
+      <p class="hero-sub">it's a good day to have a good day</p>
+      <div class="search-bar">
+        <i class="ti ti-sparkles" style="font-size:16px;color:#D4A017;"></i>
+        <span>i feel like... e.g. a slow coastal town, street food markets...</span>
+        <button class="search-btn"><i class="ti ti-arrow-right"></i></button>
       </div>
-      <div class="vibe-card" onclick="setVibe(this)">
-        <div class="vibe-icon">
-          <img src="https://loremflickr.com/240/100/city,street,urban" alt="City" />
-          <i class="ti ti-building vibe-overlay-icon"></i>
+
+      <p class="section-title">pick your vibe ~</p>
+      <div class="vibe-row">
+        <div class="vibe-card active" onclick="setVibe(this)">
+          <div class="vibe-icon">
+            <img src="https://loremflickr.com/240/100/beach,ocean,tropical" alt="Beach" />
+            <i class="ti ti-beach vibe-overlay-icon"></i>
+          </div>
+          <p class="vibe-label">Beach days</p>
+          <p class="vibe-sub">sun, sand &amp; good vibes</p>
         </div>
-        <p class="vibe-label">City strolls</p>
-        <p class="vibe-sub">coffee &amp; cute streets</p>
+        <div class="vibe-card" onclick="setVibe(this)">
+          <div class="vibe-icon">
+            <img src="https://loremflickr.com/240/100/city,street,urban" alt="City" />
+            <i class="ti ti-building vibe-overlay-icon"></i>
+          </div>
+          <p class="vibe-label">City strolls</p>
+          <p class="vibe-sub">coffee &amp; cute streets</p>
+        </div>
+        <div class="vibe-card" onclick="setVibe(this)">
+          <div class="vibe-icon">
+            <img src="https://loremflickr.com/240/100/mountain,forest,hiking" alt="Wild" />
+            <i class="ti ti-mountain vibe-overlay-icon"></i>
+          </div>
+          <p class="vibe-label">Into the wild</p>
+          <p class="vibe-sub">mountains &amp; fresh air</p>
+        </div>
+        <div class="vibe-card" onclick="setVibe(this)">
+          <div class="vibe-icon">
+            <img src="https://loremflickr.com/240/100/village,countryside,cozy" alt="Cozy" />
+            <i class="ti ti-world vibe-overlay-icon"></i>
+          </div>
+          <p class="vibe-label">Slow &amp; cozy</p>
+          <p class="vibe-sub">little towns, big peace</p>
+        </div>
       </div>
-      <div class="vibe-card" onclick="setVibe(this)">
-        <div class="vibe-icon">
-          <img src="https://loremflickr.com/240/100/mountain,forest,hiking" alt="Wild" />
-          <i class="ti ti-mountain vibe-overlay-icon"></i>
+
+      <p class="section-title">recently explored ✦</p>
+      <div class="explore-grid">
+        <div class="explore-card">
+          <img src="https://loremflickr.com/400/220/tokyo,japan" alt="Tokyo" />
+          <div class="explore-overlay">
+            <p class="explore-name">Tokyo, Japan</p>
+            <p class="explore-tag">Urban · Culture</p>
+          </div>
         </div>
-        <p class="vibe-label">Into the wild</p>
-        <p class="vibe-sub">mountains &amp; fresh air</p>
+        <div class="explore-card">
+          <img src="https://loremflickr.com/400/220/barcelona,spain" alt="Barcelona" />
+          <div class="explore-overlay">
+            <p class="explore-name">Barcelona, Spain</p>
+            <p class="explore-tag">Beaches · City</p>
+          </div>
+        </div>
+        <div class="explore-card">
+          <img src="https://loremflickr.com/400/220/bali,indonesia,rice" alt="Bali" />
+          <div class="explore-overlay">
+            <p class="explore-name">Bali, Indonesia</p>
+            <p class="explore-tag">Nature · Slow</p>
+          </div>
+        </div>
       </div>
-      <div class="vibe-card" onclick="setVibe(this)">
-        <div class="vibe-icon">
-          <img src="https://loremflickr.com/240/100/village,countryside,cozy" alt="Cozy" />
-          <i class="ti ti-world vibe-overlay-icon"></i>
+
+      <p class="section-title">inspiration for you</p>
+      <div class="inspo-row">
+        <div class="inspo-card" style="background:#FEF5D4;padding:0;overflow:hidden;">
+          <img src="https://loremflickr.com/300/70/travel,backpack,solo" class="inspo-img" alt="" />
+          <div class="inspo-body">
+            <i class="ti ti-pin" style="color:#A07C1E;"></i>
+            <p style="color:#7A5500;">Solo trips that changed lives</p>
+            <small style="color:#B08A30;">12 stories</small>
+          </div>
         </div>
-        <p class="vibe-label">Slow &amp; cozy</p>
-        <p class="vibe-sub">little towns, big peace</p>
+        <div class="inspo-card" style="background:#E6F4EC;padding:0;overflow:hidden;">
+          <img src="https://loremflickr.com/300/70/sunrise,landscape,sky" class="inspo-img" alt="" />
+          <div class="inspo-body">
+            <i class="ti ti-sun" style="color:#2E7A50;"></i>
+            <p style="color:#1A5034;">Best sunrise spots to add to your list</p>
+            <small style="color:#3A8A5A;">8 places</small>
+          </div>
+        </div>
+        <div class="inspo-card" style="background:#F0EEFF;padding:0;overflow:hidden;">
+          <img src="https://loremflickr.com/300/70/autumn,seasons,nature" class="inspo-img" alt="" />
+          <div class="inspo-body">
+            <i class="ti ti-list" style="color:#6655CC;"></i>
+            <p style="color:#3B2A99;">Bucket list ideas for every season</p>
+            <small style="color:#7766DD;">24 ideas</small>
+          </div>
+        </div>
+        <div class="inspo-card" style="background:#FFF0F0;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <i class="ti ti-mood-smile" style="color:#CC4444;"></i>
+            <p style="color:#882222;">Not sure where to go?</p>
+            <small style="color:#CC6666;">find a place for your mood</small>
+          </div>
+          <button class="surprise-btn">Surprise me!</button>
+        </div>
       </div>
     </div>
+    <!-- END PAGE: HOME -->
 
-    <p class="section-title">recently explored ✦</p>
-    <div class="explore-grid">
-      <div class="explore-card">
-        <img src="https://loremflickr.com/400/220/tokyo,japan" alt="Tokyo" />
-        <div class="explore-overlay">
-          <p class="explore-name">Tokyo, Japan</p>
-          <p class="explore-tag">Urban · Culture</p>
+    <!-- PAGE: EXPLORE -->
+    <div class="page" id="page-explore">
+      <p class="hero-title">explore the world <span>✦</span></p>
+      <p class="hero-sub">discover places that match your vibe</p>
+
+      <div class="filter-bar">
+        <div class="filter-row" id="region-filter">
+          <button class="filter-chip active">All</button>
+          <button class="filter-chip">Asia</button>
+          <button class="filter-chip">Europe</button>
+          <button class="filter-chip">Americas</button>
+          <button class="filter-chip">Africa</button>
+          <button class="filter-chip">Oceania</button>
+        </div>
+        <div class="filter-btn-wrap">
+          <button class="filter-toggle-btn" id="filter-toggle">
+            <i class="ti ti-sliders"></i> Filter
+          </button>
+          <div class="filter-panel" id="filter-panel" hidden>
+            <div class="fp-section">
+              <p class="fp-label">Price</p>
+              <div class="fp-chips">
+                <button class="fp-chip" data-filter="price" data-value="1">$ Budget</button>
+                <button class="fp-chip" data-filter="price" data-value="2">$$ Mid-range</button>
+                <button class="fp-chip" data-filter="price" data-value="3">$$$ Splurge</button>
+              </div>
+            </div>
+            <div class="fp-section">
+              <p class="fp-label">Vibe</p>
+              <div class="fp-chips">
+                <button class="fp-chip" data-filter="vibe" data-value="beach">Beach</button>
+                <button class="fp-chip" data-filter="vibe" data-value="city">City</button>
+                <button class="fp-chip" data-filter="vibe" data-value="nature">Nature</button>
+                <button class="fp-chip" data-filter="vibe" data-value="cozy">Cozy</button>
+              </div>
+            </div>
+            <button class="fp-clear" id="filter-clear">Clear all</button>
+          </div>
         </div>
       </div>
-      <div class="explore-card">
-        <img src="https://loremflickr.com/400/220/barcelona,spain" alt="Barcelona" />
-        <div class="explore-overlay">
-          <p class="explore-name">Barcelona, Spain</p>
-          <p class="explore-tag">Beaches · City</p>
+
+      <div class="dest-grid">
+        <div class="dest-card" data-region="asia" data-price="2" data-vibe="city">
+          <img src="https://loremflickr.com/400/220/tokyo,japan" alt="Tokyo" />
+          <div class="dest-info">
+            <p class="dest-name">Tokyo, Japan</p>
+            <p class="dest-meta">Asia · $$</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Urban</span>
+              <span class="dest-tag">Food</span>
+              <span class="dest-tag">Culture</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="explore-card">
-        <img src="https://loremflickr.com/400/220/bali,indonesia,rice" alt="Bali" />
-        <div class="explore-overlay">
-          <p class="explore-name">Bali, Indonesia</p>
-          <p class="explore-tag">Nature · Slow</p>
+        <div class="dest-card" data-region="europe" data-price="2" data-vibe="beach">
+          <img src="https://loremflickr.com/400/220/barcelona,spain" alt="Barcelona" />
+          <div class="dest-info">
+            <p class="dest-name">Barcelona, Spain</p>
+            <p class="dest-meta">Europe · $$</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Beach</span>
+              <span class="dest-tag">Art</span>
+              <span class="dest-tag">Food</span>
+            </div>
+          </div>
+        </div>
+        <div class="dest-card" data-region="asia" data-price="1" data-vibe="nature">
+          <img src="https://loremflickr.com/400/220/bali,indonesia,rice" alt="Bali" />
+          <div class="dest-info">
+            <p class="dest-name">Bali, Indonesia</p>
+            <p class="dest-meta">Asia · $</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Nature</span>
+              <span class="dest-tag">Spiritual</span>
+              <span class="dest-tag">Relaxed</span>
+            </div>
+          </div>
+        </div>
+        <div class="dest-card" data-region="asia" data-price="2" data-vibe="cozy">
+          <img src="https://loremflickr.com/400/220/kyoto,japan,temple" alt="Kyoto" />
+          <div class="dest-info">
+            <p class="dest-name">Kyoto, Japan</p>
+            <p class="dest-meta">Asia · $$</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Historic</span>
+              <span class="dest-tag">Serene</span>
+              <span class="dest-tag">Culture</span>
+            </div>
+          </div>
+        </div>
+        <div class="dest-card" data-region="europe" data-price="3" data-vibe="city">
+          <img src="https://loremflickr.com/400/220/paris,france,eiffel" alt="Paris" />
+          <div class="dest-info">
+            <p class="dest-name">Paris, France</p>
+            <p class="dest-meta">Europe · $$$</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Romantic</span>
+              <span class="dest-tag">Art</span>
+              <span class="dest-tag">Food</span>
+            </div>
+          </div>
+        </div>
+        <div class="dest-card" data-region="americas" data-price="1" data-vibe="city">
+          <img src="https://loremflickr.com/400/220/oaxaca,mexico" alt="Oaxaca" />
+          <div class="dest-info">
+            <p class="dest-name">Oaxaca, Mexico</p>
+            <p class="dest-meta">Americas · $</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Culture</span>
+              <span class="dest-tag">Food</span>
+              <span class="dest-tag">Art</span>
+            </div>
+          </div>
+        </div>
+        <div class="dest-card" data-region="asia" data-price="2" data-vibe="city">
+          <img src="https://loremflickr.com/400/220/seoul,korea" alt="Seoul" />
+          <div class="dest-info">
+            <p class="dest-name">Seoul, South Korea</p>
+            <p class="dest-meta">Asia · $$</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Urban</span>
+              <span class="dest-tag">Food</span>
+              <span class="dest-tag">K-Culture</span>
+            </div>
+          </div>
+        </div>
+        <div class="dest-card" data-region="africa" data-price="2" data-vibe="nature">
+          <img src="https://loremflickr.com/400/220/cape-town,africa,mountain" alt="Cape Town" />
+          <div class="dest-info">
+            <p class="dest-name">Cape Town, S. Africa</p>
+            <p class="dest-meta">Africa · $$</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Nature</span>
+              <span class="dest-tag">Beach</span>
+              <span class="dest-tag">Scenic</span>
+            </div>
+          </div>
+        </div>
+        <div class="dest-card" data-region="europe" data-price="2" data-vibe="cozy">
+          <img src="https://loremflickr.com/400/220/lisbon,portugal,tram" alt="Lisbon" />
+          <div class="dest-info">
+            <p class="dest-name">Lisbon, Portugal</p>
+            <p class="dest-meta">Europe · $$</p>
+            <div class="dest-tags">
+              <span class="dest-tag">Coastal</span>
+              <span class="dest-tag">Bohemian</span>
+              <span class="dest-tag">Food</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <!-- END PAGE: EXPLORE -->
 
-    <p class="section-title">inspiration for you</p>
-    <div class="inspo-row">
-      <div class="inspo-card" style="background:#FEF5D4;padding:0;overflow:hidden;">
-        <img src="https://loremflickr.com/300/70/travel,backpack,solo" class="inspo-img" alt="" />
-        <div class="inspo-body">
-          <i class="ti ti-pin" style="color:#A07C1E;"></i>
-          <p style="color:#7A5500;">Solo trips that changed lives</p>
-          <small style="color:#B08A30;">12 stories</small>
-        </div>
-      </div>
-      <div class="inspo-card" style="background:#E6F4EC;padding:0;overflow:hidden;">
-        <img src="https://loremflickr.com/300/70/sunrise,landscape,sky" class="inspo-img" alt="" />
-        <div class="inspo-body">
-          <i class="ti ti-sun" style="color:#2E7A50;"></i>
-          <p style="color:#1A5034;">Best sunrise spots to add to your list</p>
-          <small style="color:#3A8A5A;">8 places</small>
-        </div>
-      </div>
-      <div class="inspo-card" style="background:#F0EEFF;padding:0;overflow:hidden;">
-        <img src="https://loremflickr.com/300/70/autumn,seasons,nature" class="inspo-img" alt="" />
-        <div class="inspo-body">
-          <i class="ti ti-list" style="color:#6655CC;"></i>
-          <p style="color:#3B2A99;">Bucket list ideas for every season</p>
-          <small style="color:#7766DD;">24 ideas</small>
-        </div>
-      </div>
-      <div class="inspo-card" style="background:#FFF0F0;display:flex;flex-direction:column;justify-content:space-between;">
+    <!-- PAGE: TRIPS -->
+    <div class="page" id="page-trips">
+      <div class="page-header">
         <div>
-          <i class="ti ti-mood-smile" style="color:#CC4444;"></i>
-          <p style="color:#882222;">Not sure where to go?</p>
-          <small style="color:#CC6666;">find a place for your mood</small>
+          <p class="hero-title">your trips <span>✦</span></p>
+          <p class="hero-sub">plan, track, and relive your journeys</p>
         </div>
-        <button class="surprise-btn">Surprise me!</button>
+        <button class="add-btn"><i class="ti ti-plus"></i> New Trip</button>
+      </div>
+
+      <p class="section-title">upcoming</p>
+      <div class="trip-list">
+        <div class="trip-card">
+          <div class="trip-card-img">
+            <img src="https://loremflickr.com/128/128/lisbon,portugal" alt="Lisbon" />
+          </div>
+          <div class="trip-card-info">
+            <p class="trip-card-name">Lisbon, Portugal</p>
+            <p class="trip-card-dates">Oct 12 – Oct 19, 2026</p>
+            <span class="trip-badge upcoming">Upcoming</span>
+          </div>
+          <i class="ti ti-chevron-right trip-card-arrow"></i>
+        </div>
+      </div>
+
+      <p class="section-title">planning</p>
+      <div class="trip-list">
+        <div class="trip-card">
+          <div class="trip-card-img">
+            <img src="https://loremflickr.com/128/128/tokyo,japan" alt="Tokyo" />
+          </div>
+          <div class="trip-card-info">
+            <p class="trip-card-name">Tokyo, Japan</p>
+            <p class="trip-card-dates">Dec 2026 · in progress</p>
+            <span class="trip-badge planning">Planning</span>
+          </div>
+          <i class="ti ti-chevron-right trip-card-arrow"></i>
+        </div>
+        <div class="trip-card">
+          <div class="trip-card-img">
+            <img src="https://loremflickr.com/128/128/kyoto,japan,cherry" alt="Kyoto" />
+          </div>
+          <div class="trip-card-info">
+            <p class="trip-card-name">Kyoto, Japan</p>
+            <p class="trip-card-dates">Apr 2027 · cherry blossom season</p>
+            <span class="trip-badge planning">Planning</span>
+          </div>
+          <i class="ti ti-chevron-right trip-card-arrow"></i>
+        </div>
+      </div>
+
+      <p class="section-title">past trips</p>
+      <div class="trip-list">
+        <div class="trip-card">
+          <div class="trip-card-img">
+            <img src="https://loremflickr.com/128/128/bali,indonesia,rice" alt="Bali" />
+          </div>
+          <div class="trip-card-info">
+            <p class="trip-card-name">Bali, Indonesia</p>
+            <p class="trip-card-dates">Mar 10 – Mar 20, 2025</p>
+            <span class="trip-badge past">Completed</span>
+          </div>
+          <i class="ti ti-chevron-right trip-card-arrow"></i>
+        </div>
+        <div class="trip-card">
+          <div class="trip-card-img">
+            <img src="https://loremflickr.com/128/128/oaxaca,mexico" alt="Oaxaca" />
+          </div>
+          <div class="trip-card-info">
+            <p class="trip-card-name">Oaxaca, Mexico</p>
+            <p class="trip-card-dates">Nov 1 – Nov 8, 2024</p>
+            <span class="trip-badge past">Completed</span>
+          </div>
+          <i class="ti ti-chevron-right trip-card-arrow"></i>
+        </div>
       </div>
     </div>
+    <!-- END PAGE: TRIPS -->
+
+    <!-- PAGE: SAVED -->
+    <div class="page" id="page-saved">
+      <p class="hero-title">saved places <span>✦</span></p>
+      <p class="hero-sub">5 places you love</p>
+
+      <div class="saved-grid">
+        <div class="saved-card">
+          <img src="https://loremflickr.com/400/220/lisbon,portugal" alt="Lisbon" />
+          <div class="saved-card-body">
+            <p class="saved-card-name">Lisbon, Portugal</p>
+            <p class="saved-card-meta">Europe · Coastal</p>
+            <div class="saved-card-footer">
+              <span class="saved-recs">9 recs saved</span>
+              <i class="ti ti-heart heart-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="saved-card">
+          <img src="https://loremflickr.com/400/220/kyoto,japan,temple" alt="Kyoto" />
+          <div class="saved-card-body">
+            <p class="saved-card-name">Kyoto, Japan</p>
+            <p class="saved-card-meta">Asia · Historic</p>
+            <div class="saved-card-footer">
+              <span class="saved-recs">14 recs saved</span>
+              <i class="ti ti-heart heart-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="saved-card">
+          <img src="https://loremflickr.com/400/220/oaxaca,mexico" alt="Oaxaca" />
+          <div class="saved-card-body">
+            <p class="saved-card-name">Oaxaca, Mexico</p>
+            <p class="saved-card-meta">Americas · Culture</p>
+            <div class="saved-card-footer">
+              <span class="saved-recs">7 recs saved</span>
+              <i class="ti ti-heart heart-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="saved-card">
+          <img src="https://loremflickr.com/400/220/barcelona,spain" alt="Barcelona" />
+          <div class="saved-card-body">
+            <p class="saved-card-name">Barcelona, Spain</p>
+            <p class="saved-card-meta">Europe · Beach</p>
+            <div class="saved-card-footer">
+              <span class="saved-recs">11 recs saved</span>
+              <i class="ti ti-heart heart-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="saved-card">
+          <img src="https://loremflickr.com/400/220/bali,indonesia,rice" alt="Bali" />
+          <div class="saved-card-body">
+            <p class="saved-card-name">Bali, Indonesia</p>
+            <p class="saved-card-meta">Asia · Nature</p>
+            <div class="saved-card-footer">
+              <span class="saved-recs">5 recs saved</span>
+              <i class="ti ti-heart heart-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END PAGE: SAVED -->
+
+    <!-- PAGE: MAP -->
+    <div class="page" id="page-map">
+      <div class="construction-barrier"></div>
+      <div class="construction-body">
+        <div class="construction-icons">🚧 🏗️ 🚧</div>
+        <p class="construction-title">Under Construction</p>
+        <p class="construction-sub">the map page is being built out — an interactive globe with all your places is coming soon ✦</p>
+        <div class="construction-cones">🦺 &nbsp; 🚦 &nbsp; 🪧 &nbsp; 🚦 &nbsp; 🦺</div>
+      </div>
+      <div class="construction-barrier"></div>
+    </div>
+    <!-- END PAGE: MAP -->
+
+    <!-- END PAGE: MAP (globe) -->
+
+    <!-- PAGE: PROFILE -->
+    <div class="page" id="page-profile">
+      <p class="hero-title">hey, traveler <span>✦</span></p>
+      <p class="hero-sub">your travel story so far</p>
+
+      <div class="profile-card">
+        <div class="profile-avatar">TY</div>
+        <div>
+          <p class="profile-name">T. Dong</p>
+          <p class="profile-handle">@tingyd · Member since 2024</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <p class="stat-num">12</p>
+          <p class="stat-label">Trips</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-num">47</p>
+          <p class="stat-label">Places</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-num">8</p>
+          <p class="stat-label">Memos</p>
+        </div>
+      </div>
+
+      <div class="settings-list">
+        <div class="settings-item">
+          <i class="ti ti-user-circle"></i>
+          <span class="settings-item-label">Edit profile</span>
+          <i class="ti ti-chevron-right settings-item-arrow"></i>
+        </div>
+        <div class="settings-item">
+          <i class="ti ti-bell"></i>
+          <span class="settings-item-label">Notifications</span>
+          <i class="ti ti-chevron-right settings-item-arrow"></i>
+        </div>
+        <div class="settings-item">
+          <i class="ti ti-map-pin"></i>
+          <span class="settings-item-label">Home base</span>
+          <i class="ti ti-chevron-right settings-item-arrow"></i>
+        </div>
+        <div class="settings-item">
+          <i class="ti ti-currency-dollar"></i>
+          <span class="settings-item-label">Travel budget preferences</span>
+          <i class="ti ti-chevron-right settings-item-arrow"></i>
+        </div>
+        <div class="settings-item">
+          <i class="ti ti-palette"></i>
+          <span class="settings-item-label">Appearance</span>
+          <i class="ti ti-chevron-right settings-item-arrow"></i>
+        </div>
+        <div class="settings-item">
+          <i class="ti ti-logout"></i>
+          <span class="settings-item-label">Sign out</span>
+          <i class="ti ti-chevron-right settings-item-arrow"></i>
+        </div>
+      </div>
+    </div>
+    <!-- END PAGE: PROFILE -->
+
+    <!-- PAGE: TOOLS -->
+    <div class="page" id="page-tools">
+      <div class="tool-tabs">
+        <button class="tool-tab active" data-tool="stats"><i class="ti ti-chart-bar"></i> Stats</button>
+        <button class="tool-tab" data-tool="compare"><i class="ti ti-arrows-exchange"></i> Compare</button>
+        <button class="tool-tab" data-tool="packing"><i class="ti ti-briefcase"></i> Packing</button>
+      </div>
+      <div class="tool-panel active" id="tool-stats">
+      <p class="hero-title">your travel stats <span>✦</span></p>
+      <p class="hero-sub">a look back at everywhere you've been</p>
+
+      <div class="tstat-grid">
+        <div class="tstat-card"><p class="tstat-num">12</p><p class="tstat-label">Countries</p></div>
+        <div class="tstat-card"><p class="tstat-num">47</p><p class="tstat-label">Cities</p></div>
+        <div class="tstat-card"><p class="tstat-num">28.4k</p><p class="tstat-label">Miles flown</p></div>
+        <div class="tstat-card"><p class="tstat-num">8</p><p class="tstat-label">Trips taken</p></div>
+      </div>
+
+      <p class="section-title">top destinations</p>
+      <div class="podium-row">
+        <div class="podium-item">
+          <div class="podium-img"><img src="https://loremflickr.com/300/100/lisbon,portugal" alt="Lisbon" /></div>
+          <div class="podium-body">
+            <p class="podium-medal">🥈</p>
+            <p class="podium-name">Lisbon</p>
+            <p class="podium-count">9 saves</p>
+          </div>
+        </div>
+        <div class="podium-item first">
+          <div class="podium-img"><img src="https://loremflickr.com/300/100/kyoto,japan,temple" alt="Kyoto" /></div>
+          <div class="podium-body">
+            <p class="podium-medal">🥇</p>
+            <p class="podium-name">Kyoto</p>
+            <p class="podium-count">14 saves</p>
+          </div>
+        </div>
+        <div class="podium-item">
+          <div class="podium-img"><img src="https://loremflickr.com/300/100/barcelona,spain" alt="Barcelona" /></div>
+          <div class="podium-body">
+            <p class="podium-medal">🥉</p>
+            <p class="podium-name">Barcelona</p>
+            <p class="podium-count">11 saves</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="section-title">where you've been</p>
+      <div class="region-bars">
+        <div class="region-bar-row">
+          <span class="region-bar-label">Asia</span>
+          <div class="region-bar-track"><div class="region-bar-fill" style="width:42%"></div></div>
+          <span class="region-bar-pct">42%</span>
+        </div>
+        <div class="region-bar-row">
+          <span class="region-bar-label">Europe</span>
+          <div class="region-bar-track"><div class="region-bar-fill" style="width:35%"></div></div>
+          <span class="region-bar-pct">35%</span>
+        </div>
+        <div class="region-bar-row">
+          <span class="region-bar-label">Americas</span>
+          <div class="region-bar-track"><div class="region-bar-fill" style="width:18%"></div></div>
+          <span class="region-bar-pct">18%</span>
+        </div>
+        <div class="region-bar-row">
+          <span class="region-bar-label">Africa</span>
+          <div class="region-bar-track"><div class="region-bar-fill" style="width:5%"></div></div>
+          <span class="region-bar-pct">5%</span>
+        </div>
+      </div>
+
+      <div class="personality-card">
+        <div class="personality-icon">🌏</div>
+        <div>
+          <p class="personality-title">The Curious Wanderer</p>
+          <p class="personality-desc">You're drawn to cities with soul — food scenes, hidden alleys, and places that feel alive at night. Asia has your heart, but Europe keeps pulling you back.</p>
+        </div>
+      </div>
+      </div>
+      <!-- END TOOL: STATS -->
+
+      <div class="tool-panel" id="tool-compare">
+      <p class="hero-title">compare places <span>✦</span></p>
+      <p class="hero-sub">see how two destinations stack up</p>
+
+      <div class="cmp-header">
+        <div class="cmp-dest-card">
+          <img src="https://loremflickr.com/400/120/tokyo,japan" alt="Tokyo" />
+          <div class="cmp-dest-info">
+            <p class="cmp-dest-name">Tokyo, Japan</p>
+            <p class="cmp-dest-meta">Asia · $$</p>
+          </div>
+        </div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-dest-card">
+          <img src="https://loremflickr.com/400/120/barcelona,spain" alt="Barcelona" />
+          <div class="cmp-dest-info">
+            <p class="cmp-dest-name">Barcelona, Spain</p>
+            <p class="cmp-dest-meta">Europe · $$</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmp-table">
+        <div class="cmp-row">
+          <span class="cmp-cell">Temperate · 4 seasons</span>
+          <span class="cmp-label">Climate</span>
+          <span class="cmp-cell">Mediterranean · sunny</span>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-cell">Mar–May, Sep–Nov</span>
+          <span class="cmp-label">Best time</span>
+          <span class="cmp-cell">May–Oct</span>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-cell">~$120–180 / day</span>
+          <span class="cmp-label">Budget</span>
+          <span class="cmp-cell">~$100–160 / day</span>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-cell">Japanese</span>
+          <span class="cmp-label">Language</span>
+          <span class="cmp-cell">Spanish</span>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-cell"><span class="cmp-stars">★★★★★</span></span>
+          <span class="cmp-label">Food</span>
+          <span class="cmp-cell"><span class="cmp-stars">★★★★☆</span></span>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-cell"><span class="cmp-stars">★★☆☆☆</span></span>
+          <span class="cmp-label">Beaches</span>
+          <span class="cmp-cell"><span class="cmp-stars">★★★★★</span></span>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-cell">Temples, anime, ramen</span>
+          <span class="cmp-label">Known for</span>
+          <span class="cmp-cell">Gaudí, nightlife, tapas</span>
+        </div>
+      </div>
+      </div>
+      <!-- END TOOL: COMPARE -->
+
+      <div class="tool-panel" id="tool-packing">
+      <div class="page-header">
+        <div>
+          <p class="hero-title">packing list <span>✦</span></p>
+          <p class="hero-sub">Lisbon, Portugal · Oct 12–19, 2026</p>
+        </div>
+        <button class="add-btn"><i class="ti ti-plus"></i> Add item</button>
+      </div>
+
+      <div class="pack-progress-wrap">
+        <div class="pack-progress-bar-bg">
+          <div class="pack-progress-bar" style="width:28%"></div>
+        </div>
+        <p class="pack-progress-label">6 of 21 packed</p>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-header">
+          <p class="pack-section-title">Documents</p>
+          <span class="pack-section-count">3/4</span>
+        </div>
+        <div class="pack-item done"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Passport</span></div>
+        <div class="pack-item done"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Flight confirmation</span></div>
+        <div class="pack-item done"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Hotel booking</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Travel insurance</span></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-header">
+          <p class="pack-section-title">Clothing</p>
+          <span class="pack-section-count">0/6</span>
+        </div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">3× casual tops</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Light jacket <span class="pack-item-note">(evenings get cool in Oct)</span></span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Comfortable walking shoes</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">1× smarter outfit for dinner</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Underwear & socks (7 days)</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Sunglasses</span></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-header">
+          <p class="pack-section-title">Electronics</p>
+          <span class="pack-section-count">1/3</span>
+        </div>
+        <div class="pack-item done"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Phone + charger</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">EU power adapter</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Portable power bank</span></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-header">
+          <p class="pack-section-title">Toiletries</p>
+          <span class="pack-section-count">0/4</span>
+        </div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Sunscreen SPF 50</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Toothbrush & toothpaste</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Deodorant</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Any meds / vitamins</span></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-header">
+          <p class="pack-section-title">Misc</p>
+          <span class="pack-section-count">2/4</span>
+        </div>
+        <div class="pack-item done"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Headphones</span></div>
+        <div class="pack-item done"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Reusable water bottle</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Snacks for the flight</span></div>
+        <div class="pack-item"><button class="pack-check-btn"><i class="ti ti-check"></i></button><span class="pack-item-label">Small daypack</span></div>
+      </div>
+      </div>
+      <!-- END TOOL: PACKING -->
+    </div>
+    <!-- END PAGE: TOOLS -->
+
   </div>
 
   <!-- RIGHT PANEL -->
@@ -143,7 +749,7 @@
         <img src="https://loremflickr.com/400/160/lisbon,portugal" alt="Lisbon" />
       </div>
       <p class="trip-name">Lisbon, Portugal</p>
-      <p class="trip-dates">Oct 12 – Oct 19, 2024</p>
+      <p class="trip-dates">Oct 12 – Oct 19, 2026</p>
       <div class="countdown">
         <div class="countdown-box"><p class="num" id="d">12</p><p class="unit">days</p></div>
         <div class="countdown-box"><p class="num" id="h">08</p><p class="unit">hrs</p></div>
