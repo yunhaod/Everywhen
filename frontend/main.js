@@ -11,44 +11,13 @@ async function loadCities() {
   }
 }
 
-/* ── NAVIGATION ── */
-function navigate(pageId, navEl) {
-  // Update pages
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById('page-' + pageId);
-  if (target) target.classList.add('active');
-
-  // Update nav items
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (navEl) navEl.classList.add('active');
-
-  // Right panel visibility
-  const rightPanel = document.getElementById('right-panel');
-  if (pageId === 'explore') {
-    rightPanel.style.display = 'none';
-    document.querySelector('.app').style.gridTemplateColumns = '200px 1fr';
-  } else {
-    rightPanel.style.display = '';
-    document.querySelector('.app').style.gridTemplateColumns = '200px 1fr 280px';
-  }
-
-  // Reset main padding for full-width explore
-  const main = document.getElementById('main-content');
-  if (pageId === 'explore') {
-    main.style.padding = '28px 24px';
-  } else {
-    main.style.padding = '28px 32px';
-  }
-}
 
 /* ── VIBE CARDS ── */
 function setVibe(el, vibeKey) {
   document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
 
-  // Navigate to explore with the vibe preset
-  const exploreNav = document.querySelector('[data-page="explore"]');
-  navigate('explore', exploreNav);
+  navigate('explore');
 
   // Set slider values based on vibe
   const vibePresets = {
@@ -251,8 +220,7 @@ const VIBE_PRESETS = [
 ];
 
 function surpriseMe() {
-  const exploreNav = document.querySelector('[data-page="explore"]');
-  navigate('explore', exploreNav);
+  navigate('explore');
 
   const preset = VIBE_PRESETS[Math.floor(Math.random() * VIBE_PRESETS.length)];
   const region = SURPRISE_REGIONS[Math.floor(Math.random() * SURPRISE_REGIONS.length)];
@@ -283,7 +251,6 @@ function tick() {
   const now = new Date();
   let diff = Math.max(0, target - now);
   const days = Math.floor(diff / 864e5); diff -= days * 864e5;
-  const hrs  = Math.floor(diff / 36e5);  diff -= hrs  * 36e5;
   const hrs  = Math.floor(diff / 36e5);  diff -= hrs  * 36e5;
   const mins = Math.floor(diff / 6e4);
   const pad  = n => String(n).padStart(2, '0');
