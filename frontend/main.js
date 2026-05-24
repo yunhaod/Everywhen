@@ -1,13 +1,289 @@
-function setVibe(el) {
-  document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
+/* ── CITY DATA ── */
+let CITIES = [];
+
+async function loadCities() {
+  try {
+    const resp = await fetch('city_data.json');
+    CITIES = await resp.json();
+  } catch (e) {
+    console.warn('Could not load city_data.json, using fallback');
+    CITIES = [];
+  }
 }
 
+/* ── NAVIGATION ── */
+function navigate(pageId, navEl) {
+  // Update pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + pageId);
+  if (target) target.classList.add('active');
+
+  // Update nav items
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+
+  // Right panel visibility
+  const rightPanel = document.getElementById('right-panel');
+  if (pageId === 'explore') {
+    rightPanel.style.display = 'none';
+    document.querySelector('.app').style.gridTemplateColumns = '200px 1fr';
+  } else {
+    rightPanel.style.display = '';
+    document.querySelector('.app').style.gridTemplateColumns = '200px 1fr 280px';
+  }
+
+  // Reset main padding for full-width explore
+  const main = document.getElementById('main-content');
+  if (pageId === 'explore') {
+    main.style.padding = '28px 24px';
+  } else {
+    main.style.padding = '28px 32px';
+  }
+}
+
+/* ── VIBE CARDS ── */
+function setVibe(el, vibeKey) {
+  document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+
+  // Navigate to explore with the vibe preset
+  const exploreNav = document.querySelector('[data-page="explore"]');
+  navigate('explore', exploreNav);
+
+  // Set slider values based on vibe
+  const vibePresets = {
+    beaches:   { beaches: 90, nature: 40, urban: 20, seclusion: 50 },
+    urban:     { beaches: 20, nature: 20, urban: 90, seclusion: 10 },
+    nature:    { beaches: 20, nature: 90, urban: 20, seclusion: 70 },
+    seclusion: { beaches: 30, nature: 60, urban: 20, seclusion: 80 },
+  };
+
+  const preset = vibePresets[vibeKey];
+  if (preset) {
+    Object.entries(preset).forEach(([key, val]) => {
+      const slider = document.getElementById('sl-' + key);
+      const label  = document.getElementById('val-' + key);
+      if (slider) { slider.value = val; }
+      if (label)  { label.textContent = val; }
+    });
+  }
+
+  // Auto run
+  setTimeout(runRecommend, 200);
+}
+
+/* ── EXPLORE SLIDERS ── */
+function updateSlider(key, val) {
+  const label = document.getElementById('val-' + key);
+  if (label) label.textContent = val;
+}
+
+/* ── REGION CHIPS ── */
+function toggleChip(el) {
+  el.classList.toggle('active');
+}
+
+/* ── RECOMMEND ENGINE ── */
+const FEATURE_COLS = [
+  'unesco_count', 'nature', 'beaches', 'urban', 'seclusion',
+  'safety_index', 'cost_of_living_index', 'climate_index',
+  'popularity_score', 'pollution_index',
+];
+const WEIGHTS = [1, 1, 1, 1, 1, 2, 2, 1, 3, 1];
+
+function cosineSim(userVec, cityVec, weights) {
+  let dot = 0, magU = 0, magC = 0;
+  for (let i = 0; i < userVec.length; i++) {
+    if (isNaN(userVec[i]) || isNaN(cityVec[i])) continue;
+    const u = userVec[i] * weights[i];
+    const c = cityVec[i];
+    dot   += u * c;
+    magU  += u * u;
+    magC  += c * c;
+  }
+  const mag = Math.sqrt(magU) * Math.sqrt(magC);
+  return mag ? dot / mag : 0;
+}
+
+function getPrefs() {
+  return {
+    unesco_count:        +document.getElementById('sl-culture').value,
+    nature:              +document.getElementById('sl-nature').value,
+    beaches:             +document.getElementById('sl-beaches').value,
+    urban:               +document.getElementById('sl-urban').value,
+    seclusion:           50,
+    safety_index:        +document.getElementById('sl-safety').value,
+    cost_of_living_index:+document.getElementById('sl-budget').value,
+    climate_index:       +document.getElementById('sl-climate').value,
+    popularity_score:    +document.getElementById('sl-popularity').value,
+    pollution_index:     50,
+  };
+}
+
+function runRecommend() {
+  if (!CITIES.length) {
+    showFallbackResults();
+    return;
+  }
+
+  const activeChips = document.querySelectorAll('.region-chips .chip.active');
+  const regions = activeChips.length
+    ? [...activeChips].map(c => c.dataset.region)
+    : ['europe','asia','north_america','south_america','africa','oceania','middle_east'];
+
+  const filtered = CITIES.filter(c => regions.includes((c.region || '').toLowerCase()));
+  const prefs = getPrefs();
+  const userVec = FEATURE_COLS.map(f => prefs[f] !== undefined ? prefs[f] : NaN);
+
+  const scored = filtered.map(city => {
+    const cityVec = FEATURE_COLS.map(f => city[f] !== null && city[f] !== undefined ? +city[f] : NaN);
+    const score = cosineSim(userVec, cityVec, WEIGHTS);
+    return { ...city, match_score: Math.round(score * 100 * 10) / 10 };
+  });
+
+  scored.sort((a, b) => b.match_score - a.match_score);
+  renderResults(scored.slice(0, 15));
+}
+
+const CITY_IMG_SEEDS = {};
+function getCityImg(city, country, i) {
+  const key = city + country;
+  if (!CITY_IMG_SEEDS[key]) CITY_IMG_SEEDS[key] = 100 + (i * 7) % 400;
+  return `https://loremflickr.com/300/160/${encodeURIComponent(city)},${encodeURIComponent(country)}?lock=${CITY_IMG_SEEDS[key]}`;
+}
+
+function renderResults(cities) {
+  document.getElementById('results-placeholder').style.display = 'none';
+  const grid = document.getElementById('results-grid');
+  grid.style.display = 'grid';
+  grid.innerHTML = '';
+
+  cities.forEach((city, i) => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <img src="${getCityImg(city.city, city.country, i)}" alt="${city.city}" loading="lazy" />
+      <div class="result-card-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <p class="result-city">${city.city}</p>
+            <p class="result-country">${city.country}</p>
+          </div>
+          <button class="result-save" title="Save" onclick="toggleResultSave(this)"><i class="ti ti-heart"></i></button>
+        </div>
+        <div style="margin-top:6px;">
+          <span class="result-score"><i class="ti ti-sparkles" style="font-size:10px;"></i> ${city.match_score}% match</span>
+        </div>
+        ${city.short_description ? `<p style="font-size:11px;color:#888;margin-top:6px;line-height:1.5;">${city.short_description.slice(0, 80)}…</p>` : ''}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function showFallbackResults() {
+  const fallback = [
+    { city: 'Barcelona', country: 'Spain',    match_score: 98.2, short_description: 'Vibrant streets, Gaudí architecture, and Mediterranean beaches.' },
+    { city: 'Kyoto',     country: 'Japan',    match_score: 96.1, short_description: 'Serene temples, bamboo forests, and traditional culture.' },
+    { city: 'Lisbon',    country: 'Portugal', match_score: 94.7, short_description: 'Hillside streets, pastel buildings, and fresh pastries.' },
+    { city: 'Seville',   country: 'Spain',    match_score: 93.4, short_description: 'Sun-drenched plazas and the passionate rhythm of flamenco.' },
+    { city: 'Venice',    country: 'Italy',    match_score: 92.0, short_description: 'Winding canals and romantic historic architecture.' },
+    { city: 'Prague',    country: 'Czech Republic', match_score: 91.5, short_description: 'Gothic architecture and cobblestone streets by the river.' },
+  ];
+  renderResults(fallback);
+}
+
+function toggleResultSave(btn) {
+  btn.classList.toggle('saved');
+  btn.querySelector('i').style.color = btn.classList.contains('saved') ? '#E24B4A' : '';
+}
+
+/* ── TRIPS PAGE ── */
+function switchTripsTab(el, tabId) {
+  document.querySelectorAll('.trip-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  document.querySelectorAll('.trips-section').forEach(s => s.classList.add('hidden'));
+  document.getElementById('trips-' + tabId).classList.remove('hidden');
+}
+
+function showNewTripModal() {
+  document.getElementById('new-trip-modal').classList.remove('hidden');
+}
+
+/* ── MEMOS PAGE ── */
+function showNewMemoModal() {
+  document.getElementById('new-memo-modal').classList.remove('hidden');
+}
+
+/* ── MODAL ── */
+function closeModal(e) {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.add('hidden');
+  }
+}
+
+/* ── SAVED PAGE ── */
+function filterSaved(chip, region) {
+  document.querySelectorAll('.saved-filter-row .chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+
+  document.querySelectorAll('.saved-card').forEach(card => {
+    if (region === 'all' || card.dataset.region === region) {
+      card.classList.remove('hidden');
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+}
+
+function toggleHeart(btn) {
+  btn.classList.toggle('active');
+}
+
+/* ── SURPRISE ME ── */
+const SURPRISE_REGIONS = ['europe','asia','south_america','africa','middle_east'];
+const VIBE_PRESETS = [
+  { beaches: 90, nature: 40, urban: 20, culture: 30 },
+  { beaches: 10, nature: 90, urban: 10, culture: 40 },
+  { beaches: 30, nature: 30, urban: 90, culture: 70 },
+  { beaches: 20, nature: 60, urban: 30, culture: 80 },
+];
+
+function surpriseMe() {
+  const exploreNav = document.querySelector('[data-page="explore"]');
+  navigate('explore', exploreNav);
+
+  const preset = VIBE_PRESETS[Math.floor(Math.random() * VIBE_PRESETS.length)];
+  const region = SURPRISE_REGIONS[Math.floor(Math.random() * SURPRISE_REGIONS.length)];
+
+  // Deactivate all region chips then activate one
+  document.querySelectorAll('.region-chips .chip').forEach(c => c.classList.remove('active'));
+  const chip = document.querySelector(`.region-chips [data-region="${region}"]`);
+  if (chip) chip.classList.add('active');
+
+  // Set sliders
+  const map = {
+    beaches: 'sl-beaches', nature: 'sl-nature',
+    urban: 'sl-urban', culture: 'sl-culture',
+  };
+  Object.entries(preset).forEach(([k, v]) => {
+    const el = document.getElementById(map[k]);
+    const lb = document.getElementById('val-' + k);
+    if (el) el.value = v;
+    if (lb) lb.textContent = v;
+  });
+
+  setTimeout(runRecommend, 200);
+}
+
+/* ── COUNTDOWN ── */
 function tick() {
   const target = new Date('2026-10-19T00:00:00');
   const now = new Date();
   let diff = Math.max(0, target - now);
   const days = Math.floor(diff / 864e5); diff -= days * 864e5;
+  const hrs  = Math.floor(diff / 36e5);  diff -= hrs  * 36e5;
   const hrs  = Math.floor(diff / 36e5);  diff -= hrs  * 36e5;
   const mins = Math.floor(diff / 6e4);
   const pad  = n => String(n).padStart(2, '0');
